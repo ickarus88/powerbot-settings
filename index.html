@@ -54,33 +54,50 @@
         }
         .hidden { display: none !important; }
         .desc { font-size: 12px; color: var(--tg-theme-hint-color, #888); padding: 5px 15px 15px; }
+        
+        /* Стиль для кнопки скидання */
+        .reset-btn-container {
+            padding: 20px 15px;
+            text-align: center;
+        }
+        .reset-btn {
+            background-color: var(--tg-theme-destructive-text-color, #ff3b30);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <div class="section-title">Основні сповіщення</div>
     <div class="section">
-        <div class="row"><span class="label">💡 Вмикання/Вимикання</span><label class="switch"><input type="checkbox" id="main_events" checked><span class="slider"></span></label></div>
-        <div class="row"><span class="label">⏰ Попередження (30 хв)</span><label class="switch"><input type="checkbox" id="warnings" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">💡 Основні вмикання/вимикання</span><label class="switch"><input type="checkbox" id="main_events" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">⏰ Попередження за 30 хв</span><label class="switch"><input type="checkbox" id="warnings" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">📅 Зміни графіка</span><label class="switch"><input type="checkbox" id="schedule_changes" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">🚨 Аварійні відключення</span><label class="switch"><input type="checkbox" id="emergency" checked><span class="slider"></span></label></div>
     </div>
 
     <div class="section-title">Додаткові сервіси</div>
     <div class="section">
-        <div class="row"><span class="label">⚡ Напруга в мережі</span><label class="switch"><input type="checkbox" id="voltage" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">⚡ Повідомлення про напругу</span><label class="switch"><input type="checkbox" id="voltage" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">🚰 Статус водопостачання</span><label class="switch"><input type="checkbox" id="water_alerts" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">🌐 Статус інтернету</span><label class="switch"><input type="checkbox" id="network_status" checked><span class="slider"></span></label></div>
-        <div class="row"><span class="label">🤖 Робота сервера бота</span><label class="switch"><input type="checkbox" id="server_battery" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🤖 Сповіщення про роботу бота</span><label class="switch"><input type="checkbox" id="server_battery" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">❄️ Сніжкова гра</span><label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label></div>
     </div>
 
     <div class="section-title">Режим "Не турбувати"</div>
     <div class="section">
-        <div class="row"><span class="label">🌙 Увімкнути тихі години</span><label class="switch"><input type="checkbox" id="quiet_hours_enabled"><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🌙 Режим 'Не турбувати'</span><label class="switch"><input type="checkbox" id="quiet_hours_enabled"><span class="slider"></span></label></div>
         <div id="quiet_time_settings" class="hidden">
-            <div class="row"><span class="label">Початок (не турбувати з)</span><input type="time" id="quiet_hours_start" value="23:00"></div>
-            <div class="row"><span class="label">Кінець (будити після)</span><input type="time" id="quiet_hours_end" value="07:00"></div>
+            <div class="row"><span class="label">Початок</span><input type="time" id="quiet_hours_start" value="23:00"></div>
+            <div class="row"><span class="label">Кінець</span><input type="time" id="quiet_hours_end" value="07:00"></div>
         </div>
     </div>
     <div class="desc">У цей час бот не надсилатиме жодних сповіщень.</div>
@@ -91,6 +108,10 @@
         <div class="row"><span class="label">🔺 Верхня межа (В)</span><input type="number" id="voltage_high_limit" value="253" min="230" max="300"></div>
     </div>
     <div class="desc">Бот попередить, якщо напруга вийде за ці межі.</div>
+
+    <div class="reset-btn-container">
+        <button id="reset_btn" class="reset-btn">🔄 Встановити за замовчуванням</button>
+    </div>
 
     <script>
         let tg = window.Telegram.WebApp;
@@ -131,6 +152,30 @@
         quietToggle.addEventListener('change', function() {
             if(this.checked) { quietSettings.classList.remove('hidden'); } 
             else { quietSettings.classList.add('hidden'); }
+        });
+
+        // Логіка кнопки "Встановити за замовчуванням"
+        document.getElementById('reset_btn').addEventListener('click', () => {
+            document.getElementById('main_events').checked = true;
+            document.getElementById('warnings').checked = true;
+            document.getElementById('schedule_changes').checked = true;
+            document.getElementById('emergency').checked = true;
+            document.getElementById('voltage').checked = true;
+            document.getElementById('water_alerts').checked = true;
+            document.getElementById('network_status').checked = true;
+            document.getElementById('server_battery').checked = true;
+            document.getElementById('snowball_game').checked = true;
+            
+            document.getElementById('quiet_hours_enabled').checked = false;
+            document.getElementById('quiet_hours_start').value = "23:00";
+            document.getElementById('quiet_hours_end').value = "07:00";
+            
+            document.getElementById('voltage_low_limit').value = "198";
+            document.getElementById('voltage_high_limit').value = "253";
+            
+            document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
+            
+            tg.showAlert("Налаштування скинуто до стандартних. Натисніть «ЗБЕРЕГТИ НАЛАШТУВАННЯ» внизу екрану, щоб застосувати їх.");
         });
 
         tg.MainButton.textColor = "#ffffff";
