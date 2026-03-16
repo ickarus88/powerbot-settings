@@ -12,7 +12,7 @@
             color: var(--tg-theme-text-color, #000000);
             margin: 0;
             padding: 0;
-            padding-bottom: 80px; /* Місце для головної кнопки */
+            padding-bottom: 80px;
         }
         .section {
             background-color: var(--tg-theme-bg-color, #ffffff);
@@ -33,178 +33,112 @@
             padding: 12px 15px;
             border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #eee);
         }
-        .row:last-child {
-            border-bottom: none;
-        }
-        .label {
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        /* Стиль для iOS-подібних перемикачів */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 28px;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .row:last-child { border-bottom: none; }
+        .label { font-size: 16px; display: flex; align-items: center; gap: 10px; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 34px;
         }
         .slider:before {
-            position: absolute;
-            content: "";
-            height: 24px;
-            width: 24px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: absolute; content: ""; height: 24px; width: 24px; left: 2px; bottom: 2px;
+            background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        input:checked + .slider {
-            background-color: var(--tg-theme-button-color, #3390ec);
-        }
-        input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-        /* Інпути для чисел і часу */
+        input:checked + .slider { background-color: var(--tg-theme-button-color, #3390ec); }
+        input:checked + .slider:before { transform: translateX(22px); }
         input[type="time"], input[type="number"] {
             background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            color: var(--tg-theme-text-color, #000);
-            border: none;
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 16px;
-            width: 80px;
-            text-align: center;
+            color: var(--tg-theme-text-color, #000); border: none; padding: 8px;
+            border-radius: 8px; font-size: 16px; width: 80px; text-align: center;
         }
-        .hidden {
-            display: none !important;
-        }
-        .desc {
-            font-size: 12px;
-            color: var(--tg-theme-hint-color, #888);
-            padding: 5px 15px 15px;
-        }
+        .hidden { display: none !important; }
+        .desc { font-size: 12px; color: var(--tg-theme-hint-color, #888); padding: 5px 15px 15px; }
     </style>
 </head>
 <body>
 
     <div class="section-title">Основні сповіщення</div>
     <div class="section">
-        <div class="row">
-            <span class="label">💡 Вмикання/Вимикання</span>
-            <label class="switch"><input type="checkbox" id="main_events" checked><span class="slider"></span></label>
-        </div>
-        <div class="row">
-            <span class="label">⏰ Попередження (30 хв)</span>
-            <label class="switch"><input type="checkbox" id="warnings" checked><span class="slider"></span></label>
-        </div>
-        <div class="row">
-            <span class="label">📅 Зміни графіка</span>
-            <label class="switch"><input type="checkbox" id="schedule_changes" checked><span class="slider"></span></label>
-        </div>
-        <div class="row">
-            <span class="label">🚨 Аварійні відключення</span>
-            <label class="switch"><input type="checkbox" id="emergency" checked><span class="slider"></span></label>
-        </div>
+        <div class="row"><span class="label">💡 Вмикання/Вимикання</span><label class="switch"><input type="checkbox" id="main_events" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">⏰ Попередження (30 хв)</span><label class="switch"><input type="checkbox" id="warnings" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">📅 Зміни графіка</span><label class="switch"><input type="checkbox" id="schedule_changes" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🚨 Аварійні відключення</span><label class="switch"><input type="checkbox" id="emergency" checked><span class="slider"></span></label></div>
     </div>
 
     <div class="section-title">Додаткові сервіси</div>
     <div class="section">
-        <div class="row">
-            <span class="label">⚡ Напруга в мережі</span>
-            <label class="switch"><input type="checkbox" id="voltage" checked><span class="slider"></span></label>
-        </div>
-        <div class="row">
-            <span class="label">🚰 Статус водопостачання</span>
-            <label class="switch"><input type="checkbox" id="water_alerts" checked><span class="slider"></span></label>
-        </div>
-        <div class="row">
-            <span class="label">🌐 Статус інтернету</span>
-            <label class="switch"><input type="checkbox" id="network_status" checked><span class="slider"></span></label>
-        </div>
-        <div class="row">
-            <span class="label">🤖 Робота сервера бота</span>
-            <label class="switch"><input type="checkbox" id="server_battery" checked><span class="slider"></span></label>
-        </div>
-        <div class="row">
-            <span class="label">❄️ Сніжкова гра</span>
-            <label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label>
-        </div>
+        <div class="row"><span class="label">⚡ Напруга в мережі</span><label class="switch"><input type="checkbox" id="voltage" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🚰 Статус водопостачання</span><label class="switch"><input type="checkbox" id="water_alerts" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🌐 Статус інтернету</span><label class="switch"><input type="checkbox" id="network_status" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🤖 Робота сервера бота</span><label class="switch"><input type="checkbox" id="server_battery" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">❄️ Сніжкова гра</span><label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label></div>
     </div>
 
     <div class="section-title">Режим "Не турбувати"</div>
     <div class="section">
-        <div class="row">
-            <span class="label">🌙 Увімкнути тихі години</span>
-            <label class="switch"><input type="checkbox" id="quiet_hours_enabled"><span class="slider"></span></label>
-        </div>
+        <div class="row"><span class="label">🌙 Увімкнути тихі години</span><label class="switch"><input type="checkbox" id="quiet_hours_enabled"><span class="slider"></span></label></div>
         <div id="quiet_time_settings" class="hidden">
-            <div class="row">
-                <span class="label">Початок (не турбувати з)</span>
-                <input type="time" id="quiet_hours_start" value="23:00">
-            </div>
-            <div class="row">
-                <span class="label">Кінець (будити після)</span>
-                <input type="time" id="quiet_hours_end" value="07:00">
-            </div>
+            <div class="row"><span class="label">Початок (не турбувати з)</span><input type="time" id="quiet_hours_start" value="23:00"></div>
+            <div class="row"><span class="label">Кінець (будити після)</span><input type="time" id="quiet_hours_end" value="07:00"></div>
         </div>
     </div>
     <div class="desc">У цей час бот не надсилатиме жодних сповіщень.</div>
 
     <div class="section-title">Межі напруги (Вольти)</div>
     <div class="section">
-        <div class="row">
-            <span class="label">🔻 Нижня межа (В)</span>
-            <input type="number" id="voltage_low_limit" value="198" min="100" max="220">
-        </div>
-        <div class="row">
-            <span class="label">🔺 Верхня межа (В)</span>
-            <input type="number" id="voltage_high_limit" value="253" min="230" max="300">
-        </div>
+        <div class="row"><span class="label">🔻 Нижня межа (В)</span><input type="number" id="voltage_low_limit" value="198" min="100" max="220"></div>
+        <div class="row"><span class="label">🔺 Верхня межа (В)</span><input type="number" id="voltage_high_limit" value="253" min="230" max="300"></div>
     </div>
     <div class="desc">Бот попередить, якщо напруга вийде за ці межі.</div>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Розгортаємо на весь екран
+        tg.expand();
+
+        // 1. ЧИТАЄМО ДАНІ З URL (від бота)
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            const setBool = (id) => {
+                if (urlParams.has(id)) {
+                    document.getElementById(id).checked = (urlParams.get(id) === '1');
+                }
+            };
+            
+            const setVal = (id) => {
+                if (urlParams.has(id)) {
+                    document.getElementById(id).value = urlParams.get(id);
+                }
+            };
+
+            // Застосовуємо налаштування користувача
+            setBool('main_events'); setBool('warnings'); setBool('schedule_changes');
+            setBool('emergency'); setBool('voltage'); setBool('water_alerts');
+            setBool('network_status'); setBool('server_battery'); setBool('snowball_game');
+            setBool('quiet_hours_enabled');
+            
+            setVal('quiet_hours_start'); setVal('quiet_hours_end');
+            setVal('voltage_low_limit'); setVal('voltage_high_limit');
+
+            // Оновлюємо видимість блоку часу
+            document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
+        });
 
         // Логіка показу/сховання налаштувань часу
         const quietToggle = document.getElementById('quiet_hours_enabled');
         const quietSettings = document.getElementById('quiet_time_settings');
-        
         quietToggle.addEventListener('change', function() {
-            if(this.checked) {
-                quietSettings.classList.remove('hidden');
-            } else {
-                quietSettings.classList.add('hidden');
-            }
+            if(this.checked) { quietSettings.classList.remove('hidden'); } 
+            else { quietSettings.classList.add('hidden'); }
         });
 
-        // Налаштовуємо головну кнопку Telegram
         tg.MainButton.textColor = "#ffffff";
         tg.MainButton.color = tg.themeParams.button_color || "#3390ec";
         tg.MainButton.setText("ЗБЕРЕГТИ НАЛАШТУВАННЯ");
         tg.MainButton.show();
 
-        // Обробка натискання на кнопку "Зберегти"
         Telegram.WebApp.onEvent('mainButtonClicked', function() {
-            
-            // Валідація напруги
             let lowV = parseInt(document.getElementById('voltage_low_limit').value);
             let highV = parseInt(document.getElementById('voltage_high_limit').value);
             
@@ -213,7 +147,6 @@
                 return;
             }
 
-            // Збираємо всі дані
             let data = {
                 main_events: document.getElementById('main_events').checked,
                 warnings: document.getElementById('warnings').checked,
@@ -230,8 +163,6 @@
                 voltage_low_limit: lowV,
                 voltage_high_limit: highV
             };
-
-            // Відправляємо дані в бота і закриваємо вікно
             tg.sendData(JSON.stringify(data));
         });
     </script>
