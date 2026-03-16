@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Налаштування Щасливий Watt</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            color: var(--tg-theme-text-color, #000000);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 80px; /* Місце для головної кнопки */
+        }
+        .section {
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            margin-top: 20px;
+            border-top: 1px solid var(--tg-theme-hint-color, #ccc);
+            border-bottom: 1px solid var(--tg-theme-hint-color, #ccc);
+        }
+        .section-title {
+            padding: 10px 15px 5px;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: var(--tg-theme-hint-color, #888);
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #eee);
+        }
+        .row:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        /* Стиль для iOS-подібних перемикачів */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider {
+            background-color: var(--tg-theme-button-color, #3390ec);
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        /* Інпути для чисел і часу */
+        input[type="time"], input[type="number"] {
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            color: var(--tg-theme-text-color, #000);
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 80px;
+            text-align: center;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .desc {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, #888);
+            padding: 5px 15px 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section-title">Основні сповіщення</div>
+    <div class="section">
+        <div class="row">
+            <span class="label">💡 Вмикання/Вимикання</span>
+            <label class="switch"><input type="checkbox" id="main_events" checked><span class="slider"></span></label>
+        </div>
+        <div class="row">
+            <span class="label">⏰ Попередження (30 хв)</span>
+            <label class="switch"><input type="checkbox" id="warnings" checked><span class="slider"></span></label>
+        </div>
+        <div class="row">
+            <span class="label">📅 Зміни графіка</span>
+            <label class="switch"><input type="checkbox" id="schedule_changes" checked><span class="slider"></span></label>
+        </div>
+        <div class="row">
+            <span class="label">🚨 Аварійні відключення</span>
+            <label class="switch"><input type="checkbox" id="emergency" checked><span class="slider"></span></label>
+        </div>
+    </div>
+
+    <div class="section-title">Додаткові сервіси</div>
+    <div class="section">
+        <div class="row">
+            <span class="label">⚡ Напруга в мережі</span>
+            <label class="switch"><input type="checkbox" id="voltage" checked><span class="slider"></span></label>
+        </div>
+        <div class="row">
+            <span class="label">🚰 Статус водопостачання</span>
+            <label class="switch"><input type="checkbox" id="water_alerts" checked><span class="slider"></span></label>
+        </div>
+        <div class="row">
+            <span class="label">🌐 Статус інтернету</span>
+            <label class="switch"><input type="checkbox" id="network_status" checked><span class="slider"></span></label>
+        </div>
+        <div class="row">
+            <span class="label">🤖 Робота сервера бота</span>
+            <label class="switch"><input type="checkbox" id="server_battery" checked><span class="slider"></span></label>
+        </div>
+        <div class="row">
+            <span class="label">❄️ Сніжкова гра</span>
+            <label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label>
+        </div>
+    </div>
+
+    <div class="section-title">Режим "Не турбувати"</div>
+    <div class="section">
+        <div class="row">
+            <span class="label">🌙 Увімкнути тихі години</span>
+            <label class="switch"><input type="checkbox" id="quiet_hours_enabled"><span class="slider"></span></label>
+        </div>
+        <div id="quiet_time_settings" class="hidden">
+            <div class="row">
+                <span class="label">Початок (не турбувати з)</span>
+                <input type="time" id="quiet_hours_start" value="23:00">
+            </div>
+            <div class="row">
+                <span class="label">Кінець (будити після)</span>
+                <input type="time" id="quiet_hours_end" value="07:00">
+            </div>
+        </div>
+    </div>
+    <div class="desc">У цей час бот не надсилатиме жодних сповіщень.</div>
+
+    <div class="section-title">Межі напруги (Вольти)</div>
+    <div class="section">
+        <div class="row">
+            <span class="label">🔻 Нижня межа (В)</span>
+            <input type="number" id="voltage_low_limit" value="198" min="100" max="220">
+        </div>
+        <div class="row">
+            <span class="label">🔺 Верхня межа (В)</span>
+            <input type="number" id="voltage_high_limit" value="253" min="230" max="300">
+        </div>
+    </div>
+    <div class="desc">Бот попередить, якщо напруга вийде за ці межі.</div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Розгортаємо на весь екран
+
+        // Логіка показу/сховання налаштувань часу
+        const quietToggle = document.getElementById('quiet_hours_enabled');
+        const quietSettings = document.getElementById('quiet_time_settings');
+        
+        quietToggle.addEventListener('change', function() {
+            if(this.checked) {
+                quietSettings.classList.remove('hidden');
+            } else {
+                quietSettings.classList.add('hidden');
+            }
+        });
+
+        // Налаштовуємо головну кнопку Telegram
+        tg.MainButton.textColor = "#ffffff";
+        tg.MainButton.color = tg.themeParams.button_color || "#3390ec";
+        tg.MainButton.setText("ЗБЕРЕГТИ НАЛАШТУВАННЯ");
+        tg.MainButton.show();
+
+        // Обробка натискання на кнопку "Зберегти"
+        Telegram.WebApp.onEvent('mainButtonClicked', function() {
+            
+            // Валідація напруги
+            let lowV = parseInt(document.getElementById('voltage_low_limit').value);
+            let highV = parseInt(document.getElementById('voltage_high_limit').value);
+            
+            if (lowV >= highV) {
+                tg.showAlert("Помилка: Нижня межа напруги не може бути більшою за верхню!");
+                return;
+            }
+
+            // Збираємо всі дані
+            let data = {
+                main_events: document.getElementById('main_events').checked,
+                warnings: document.getElementById('warnings').checked,
+                schedule_changes: document.getElementById('schedule_changes').checked,
+                emergency: document.getElementById('emergency').checked,
+                voltage: document.getElementById('voltage').checked,
+                water_alerts: document.getElementById('water_alerts').checked,
+                network_status: document.getElementById('network_status').checked,
+                server_battery: document.getElementById('server_battery').checked,
+                snowball_game: document.getElementById('snowball_game').checked,
+                quiet_hours_enabled: document.getElementById('quiet_hours_enabled').checked,
+                quiet_hours_start: document.getElementById('quiet_hours_start').value,
+                quiet_hours_end: document.getElementById('quiet_hours_end').value,
+                voltage_low_limit: lowV,
+                voltage_high_limit: highV
+            };
+
+            // Відправляємо дані в бота і закриваємо вікно
+            tg.sendData(JSON.stringify(data));
+        });
+    </script>
+</body>
+</html>
