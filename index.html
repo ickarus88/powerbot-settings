@@ -55,7 +55,6 @@
         .hidden { display: none !important; }
         .desc { font-size: 12px; color: var(--tg-theme-hint-color, #888); padding: 5px 15px 15px; }
         
-        /* Стиль для кнопки скидання */
         .reset-btn-container {
             padding: 20px 15px;
             text-align: center;
@@ -92,6 +91,17 @@
         <div class="row"><span class="label">❄️ Сніжкова гра</span><label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label></div>
     </div>
 
+    <!-- НОВИЙ РОЗДІЛ: НАГАДУВАННЯ -->
+    <div class="section-title">Нагадування про показники</div>
+    <div class="section">
+        <div class="row"><span class="label">📋 Нагадувати про лічильники</span><label class="switch"><input type="checkbox" id="utility_reminders_enabled" checked><span class="slider"></span></label></div>
+        <div id="utility_settings" class="hidden">
+            <div class="row"><span class="label">Днів до кінця місяця</span><input type="number" id="utility_offset_days" value="2" min="1" max="7"></div>
+            <div class="row"><span class="label">Час нагадування</span><input type="time" id="utility_time" value="10:00"></div>
+        </div>
+    </div>
+    <div class="desc">Бот нагадає передати показники води та світла у вибраний день.</div>
+
     <div class="section-title">Режим "Не турбувати"</div>
     <div class="section">
         <div class="row"><span class="label">🌙 Режим 'Не турбувати'</span><label class="switch"><input type="checkbox" id="quiet_hours_enabled"><span class="slider"></span></label></div>
@@ -117,7 +127,6 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 1. ЧИТАЄМО ДАНІ З URL (від бота)
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
             
@@ -133,20 +142,25 @@
                 }
             };
 
-            // Застосовуємо налаштування користувача
+            // Застосовуємо існуючі налаштування
             setBool('main_events'); setBool('warnings'); setBool('schedule_changes');
             setBool('emergency'); setBool('voltage'); setBool('water_alerts');
             setBool('network_status'); setBool('server_battery'); setBool('snowball_game');
             setBool('quiet_hours_enabled');
-            
             setVal('quiet_hours_start'); setVal('quiet_hours_end');
             setVal('voltage_low_limit'); setVal('voltage_high_limit');
 
-            // Оновлюємо видимість блоку часу
+            // Застосовуємо нові налаштування нагадувань
+            setBool('utility_reminders_enabled');
+            setVal('utility_offset_days');
+            setVal('utility_time');
+
+            // Викликаємо оновлення видимості блоків
             document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
+            document.getElementById('utility_reminders_enabled').dispatchEvent(new Event('change'));
         });
 
-        // Логіка показу/сховання налаштувань часу
+        // Логіка показу/сховання "Не турбувати"
         const quietToggle = document.getElementById('quiet_hours_enabled');
         const quietSettings = document.getElementById('quiet_time_settings');
         quietToggle.addEventListener('change', function() {
@@ -154,28 +168,40 @@
             else { quietSettings.classList.add('hidden'); }
         });
 
+        // Логіка показу/сховання "Нагадувань"
+        const utilityToggle = document.getElementById('utility_reminders_enabled');
+        const utilitySettings = document.getElementById('utility_settings');
+        utilityToggle.addEventListener('change', function() {
+            if(this.checked) { utilitySettings.classList.remove('hidden'); } 
+            else { utilitySettings.classList.add('hidden'); }
+        });
+
         // Логіка кнопки "Встановити за замовчуванням"
         document.getElementById('reset_btn').addEventListener('click', () => {
-            document.getElementById('main_events').checked = true;
-            document.getElementById('warnings').checked = true;
-            document.getElementById('schedule_changes').checked = true;
-            document.getElementById('emergency').checked = true;
-            document.getElementById('voltage').checked = true;
-            document.getElementById('water_alerts').checked = true;
-            document.getElementById('network_status').checked = true;
-            document.getElementById('server_battery').checked = true;
-            document.getElementById('snowball_game').checked = true;
+            const setCheck = (id, val) => document.getElementById(id).checked = val;
+            const setInput = (id, val) => document.getElementById(id).value = val;
+
+            setCheck('main_events', true); setCheck('warnings', true);
+            setCheck('schedule_changes', true); setCheck('emergency', true);
+            setCheck('voltage', true); setCheck('water_alerts', true);
+            setCheck('network_status', true); setCheck('server_battery', true);
+            setCheck('snowball_game', true);
             
-            document.getElementById('quiet_hours_enabled').checked = false;
-            document.getElementById('quiet_hours_start').value = "23:00";
-            document.getElementById('quiet_hours_end').value = "07:00";
+            setCheck('utility_reminders_enabled', true);
+            setInput('utility_offset_days', "2");
+            setInput('utility_time', "10:00");
+
+            setCheck('quiet_hours_enabled', false);
+            setInput('quiet_hours_start', "23:00");
+            setInput('quiet_hours_end', "07:00");
             
-            document.getElementById('voltage_low_limit').value = "198";
-            document.getElementById('voltage_high_limit').value = "253";
+            setInput('voltage_low_limit', "198");
+            setInput('voltage_high_limit', "253");
             
-            document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
+            quietToggle.dispatchEvent(new Event('change'));
+            utilityToggle.dispatchEvent(new Event('change'));
             
-            tg.showAlert("Налаштування скинуто до стандартних. Натисніть «ЗБЕРЕГТИ НАЛАШТУВАННЯ» внизу екрану, щоб застосувати їх.");
+            tg.showAlert("Налаштування скинуто до стандартних. Не забудьте зберегти їх.");
         });
 
         tg.MainButton.textColor = "#ffffff";
@@ -202,6 +228,11 @@
                 network_status: document.getElementById('network_status').checked,
                 server_battery: document.getElementById('server_battery').checked,
                 snowball_game: document.getElementById('snowball_game').checked,
+                // Нові дані
+                utility_reminders_enabled: document.getElementById('utility_reminders_enabled').checked,
+                utility_offset_days: parseInt(document.getElementById('utility_offset_days').value),
+                utility_time: document.getElementById('utility_time').value,
+                // Існуючі дані
                 quiet_hours_enabled: document.getElementById('quiet_hours_enabled').checked,
                 quiet_hours_start: document.getElementById('quiet_hours_start').value,
                 quiet_hours_end: document.getElementById('quiet_hours_end').value,
