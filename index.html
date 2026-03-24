@@ -52,6 +52,17 @@
             color: var(--tg-theme-text-color, #000); border: none; padding: 8px;
             border-radius: 8px; font-size: 16px; width: 80px; text-align: center;
         }
+        .style-select {
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            color: var(--tg-theme-text-color, #000);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            max-width: 180px;
+        }
         .hidden { display: none !important; }
         .desc { font-size: 12px; color: var(--tg-theme-hint-color, #888); padding: 5px 15px 15px; }
         
@@ -74,6 +85,7 @@
 </head>
 <body>
 
+    <!-- 1. ОСНОВНІ СПОВІЩЕННЯ -->
     <div class="section-title">Основні сповіщення</div>
     <div class="section">
         <div class="row"><span class="label">💡 Основні вмикання/вимикання</span><label class="switch"><input type="checkbox" id="main_events" checked><span class="slider"></span></label></div>
@@ -82,24 +94,7 @@
         <div class="row"><span class="label">🚨 Аварійні відключення</span><label class="switch"><input type="checkbox" id="emergency" checked><span class="slider"></span></label></div>
     </div>
 
-    <!-- ОБ'ЄДНАНИЙ РОЗДІЛ: ПЕРСОНАЛЬНИЙ АСИСТЕНТ -->
-    <div class="section-title">Персональний асистент</div>
-    <div class="section">
-        <!-- Ранкове зведення -->
-        <div class="row"><span class="label">🌅 Ранкове смарт-зведення</span><label class="switch"><input type="checkbox" id="morning_briefing_enabled"><span class="slider"></span></label></div>
-        <div id="briefing_settings" class="hidden">
-            <div class="row"><span class="label">Час отримання</span><input type="time" id="morning_briefing_time" value="07:00"></div>
-        </div>
-        
-        <!-- Нагадування про лічильники -->
-        <div class="row"><span class="label">📋 Нагадувати про лічильники</span><label class="switch"><input type="checkbox" id="utility_reminders_enabled" checked><span class="slider"></span></label></div>
-        <div id="utility_settings" class="hidden">
-            <div class="row"><span class="label">Днів до кінця місяця</span><input type="number" id="utility_offset_days" value="2" min="1" max="7"></div>
-            <div class="row"><span class="label">Час нагадування</span><input type="time" id="utility_time" value="10:00"></div>
-        </div>
-    </div>
-    <div class="desc">Бот щоранку надсилатиме зведення та нагадуватиме передати показники лічильників.</div>
-
+    <!-- 2. ДОДАТКОВІ СЕРВІСИ -->
     <div class="section-title">Додаткові сервіси</div>
     <div class="section">
         <div class="row"><span class="label">🚰 Статус водопостачання</span><label class="switch"><input type="checkbox" id="water_alerts" checked><span class="slider"></span></label></div>
@@ -108,6 +103,7 @@
         <div class="row"><span class="label">❄️ Сніжкова гра</span><label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label></div>
     </div>
 
+    <!-- 3. РЕЖИМ НЕ ТУРБУВАТИ -->
     <div class="section-title">Режим "Не турбувати"</div>
     <div class="section">
         <div class="row"><span class="label">🌙 Режим 'Не турбувати'</span><label class="switch"><input type="checkbox" id="quiet_hours_enabled"><span class="slider"></span></label></div>
@@ -118,6 +114,23 @@
     </div>
     <div class="desc">У цей час бот не надсилатиме жодних сповіщень.</div>
 
+    <!-- 4. ПЕРСОНАЛЬНИЙ АСИСТЕНТ -->
+    <div class="section-title">Персональний асистент</div>
+    <div class="section">
+        <div class="row"><span class="label">🌅 Ранкове смарт-зведення</span><label class="switch"><input type="checkbox" id="morning_briefing_enabled"><span class="slider"></span></label></div>
+        <div id="briefing_settings" class="hidden">
+            <div class="row"><span class="label">Час отримання</span><input type="time" id="morning_briefing_time" value="07:00"></div>
+        </div>
+        
+        <div class="row"><span class="label">📋 Нагадувати про лічильники</span><label class="switch"><input type="checkbox" id="utility_reminders_enabled" checked><span class="slider"></span></label></div>
+        <div id="utility_settings" class="hidden">
+            <div class="row"><span class="label">Днів до кінця місяця</span><input type="number" id="utility_offset_days" value="2" min="1" max="7"></div>
+            <div class="row"><span class="label">Час нагадування</span><input type="time" id="utility_time" value="10:00"></div>
+        </div>
+    </div>
+    <div class="desc">Бот щоранку надсилатиме зведення та нагадуватиме передати показники лічильників.</div>
+
+    <!-- 5. МЕЖІ НАПРУГИ -->
     <div class="section-title">Межі напруги (Вольти)</div>
     <div class="section">
         <div class="row"><span class="label">⚡ Повідомлення про напругу</span><label class="switch"><input type="checkbox" id="voltage" checked><span class="slider"></span></label></div>
@@ -127,6 +140,20 @@
         </div>
     </div>
     <div class="desc">Бот попередить, якщо напруга вийде за ці межі.</div>
+
+    <!-- 6. СТИЛЬ СПІЛКУВАННЯ -->
+    <div class="section-title">Стиль спілкування бота</div>
+    <div class="section">
+        <div class="row">
+            <span class="label">🎭 Оберіть стиль</span>
+            <select id="comm_style" class="style-select">
+                <option value="default">Звичайний (Дружній)</option>
+                <option value="official">Офіційний (Сухий)</option>
+                <option value="sarcastic">Жартівливий (Сарказм)</option>
+            </select>
+        </div>
+    </div>
+    <div class="desc">Визначає, як бот буде повідомляти про події.</div>
 
     <div class="reset-btn-container">
         <button id="reset_btn" class="reset-btn">🔄 Встановити за замовчуванням</button>
@@ -158,11 +185,15 @@
             setVal('quiet_hours_start'); setVal('quiet_hours_end');
             setVal('voltage_low_limit'); setVal('voltage_high_limit');
             
-            // Асистент
             setBool('utility_reminders_enabled');
             setVal('utility_offset_days'); setVal('utility_time');
             setBool('morning_briefing_enabled');
             setVal('morning_briefing_time');
+            
+            // Завантажуємо стиль спілкування
+            if (urlParams.has('comm_style')) {
+                document.getElementById('comm_style').value = urlParams.get('comm_style');
+            }
 
             document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
             document.getElementById('utility_reminders_enabled').dispatchEvent(new Event('change'));
@@ -215,6 +246,9 @@
             setCheck('morning_briefing_enabled', false);
             setInput('morning_briefing_time', "07:00");
             
+            // Скидаємо стиль на звичайний
+            document.getElementById('comm_style').value = "default";
+            
             quietToggle.dispatchEvent(new Event('change'));
             utilityToggle.dispatchEvent(new Event('change'));
             voltageToggle.dispatchEvent(new Event('change'));
@@ -258,9 +292,11 @@
                 voltage_low_limit: lowV,
                 voltage_high_limit: highV,
 
-                // Нові дані
                 morning_briefing_enabled: document.getElementById('morning_briefing_enabled').checked,
-                morning_briefing_time: document.getElementById('morning_briefing_time').value
+                morning_briefing_time: document.getElementById('morning_briefing_time').value,
+                
+                // Передаємо обраний стиль
+                comm_style: document.getElementById('comm_style').value
             };
             tg.sendData(JSON.stringify(data));
         });
