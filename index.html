@@ -82,24 +82,31 @@
         <div class="row"><span class="label">🚨 Аварійні відключення</span><label class="switch"><input type="checkbox" id="emergency" checked><span class="slider"></span></label></div>
     </div>
 
-    <div class="section-title">Додаткові сервіси</div>
+    <!-- ОБ'ЄДНАНИЙ РОЗДІЛ: ПЕРСОНАЛЬНИЙ АСИСТЕНТ -->
+    <div class="section-title">Персональний асистент</div>
     <div class="section">
-        <!-- Повідомлення про напругу перенесено звідси -->
-        <div class="row"><span class="label">🚰 Статус водопостачання</span><label class="switch"><input type="checkbox" id="water_alerts" checked><span class="slider"></span></label></div>
-        <div class="row"><span class="label">🌐 Статус інтернету</span><label class="switch"><input type="checkbox" id="network_status" checked><span class="slider"></span></label></div>
-        <div class="row"><span class="label">🤖 Сповіщення про роботу бота</span><label class="switch"><input type="checkbox" id="server_battery" checked><span class="slider"></span></label></div>
-        <div class="row"><span class="label">❄️ Сніжкова гра</span><label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label></div>
-    </div>
-
-    <div class="section-title">Нагадування про показники</div>
-    <div class="section">
+        <!-- Ранкове зведення -->
+        <div class="row"><span class="label">🌅 Ранкове смарт-зведення</span><label class="switch"><input type="checkbox" id="morning_briefing_enabled"><span class="slider"></span></label></div>
+        <div id="briefing_settings" class="hidden">
+            <div class="row"><span class="label">Час отримання</span><input type="time" id="morning_briefing_time" value="07:00"></div>
+        </div>
+        
+        <!-- Нагадування про лічильники -->
         <div class="row"><span class="label">📋 Нагадувати про лічильники</span><label class="switch"><input type="checkbox" id="utility_reminders_enabled" checked><span class="slider"></span></label></div>
         <div id="utility_settings" class="hidden">
             <div class="row"><span class="label">Днів до кінця місяця</span><input type="number" id="utility_offset_days" value="2" min="1" max="7"></div>
             <div class="row"><span class="label">Час нагадування</span><input type="time" id="utility_time" value="10:00"></div>
         </div>
     </div>
-    <div class="desc">Бот нагадає передати показники води та світла у вибраний день.</div>
+    <div class="desc">Бот щоранку надсилатиме зведення та нагадуватиме передати показники лічильників.</div>
+
+    <div class="section-title">Додаткові сервіси</div>
+    <div class="section">
+        <div class="row"><span class="label">🚰 Статус водопостачання</span><label class="switch"><input type="checkbox" id="water_alerts" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🌐 Статус інтернету</span><label class="switch"><input type="checkbox" id="network_status" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🤖 Сповіщення про роботу бота</span><label class="switch"><input type="checkbox" id="server_battery" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">❄️ Сніжкова гра</span><label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label></div>
+    </div>
 
     <div class="section-title">Режим "Не турбувати"</div>
     <div class="section">
@@ -113,9 +120,7 @@
 
     <div class="section-title">Межі напруги (Вольти)</div>
     <div class="section">
-        <!-- Повзунок перенесено сюди -->
         <div class="row"><span class="label">⚡ Повідомлення про напругу</span><label class="switch"><input type="checkbox" id="voltage" checked><span class="slider"></span></label></div>
-        <!-- Блок з лімітами, який буде ховатися -->
         <div id="voltage_settings" class="hidden">
             <div class="row"><span class="label">🔻 Нижня межа (В)</span><input type="number" id="voltage_low_limit" value="198" min="100" max="220"></div>
             <div class="row"><span class="label">🔺 Верхня межа (В)</span><input type="number" id="voltage_high_limit" value="253" min="230" max="300"></div>
@@ -146,50 +151,49 @@
                 }
             };
 
-            // Застосовуємо існуючі налаштування
             setBool('main_events'); setBool('warnings'); setBool('schedule_changes');
             setBool('emergency'); setBool('voltage'); setBool('water_alerts');
             setBool('network_status'); setBool('server_battery'); setBool('snowball_game');
             setBool('quiet_hours_enabled');
             setVal('quiet_hours_start'); setVal('quiet_hours_end');
             setVal('voltage_low_limit'); setVal('voltage_high_limit');
-
-            // Застосовуємо нові налаштування нагадувань
+            
+            // Асистент
             setBool('utility_reminders_enabled');
-            setVal('utility_offset_days');
-            setVal('utility_time');
+            setVal('utility_offset_days'); setVal('utility_time');
+            setBool('morning_briefing_enabled');
+            setVal('morning_briefing_time');
 
-            // Викликаємо оновлення видимості блоків
             document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
             document.getElementById('utility_reminders_enabled').dispatchEvent(new Event('change'));
-            document.getElementById('voltage').dispatchEvent(new Event('change')); // Виклик для напруги
+            document.getElementById('voltage').dispatchEvent(new Event('change'));
+            document.getElementById('morning_briefing_enabled').dispatchEvent(new Event('change'));
         });
 
-        // Логіка показу/сховання "Не турбувати"
         const quietToggle = document.getElementById('quiet_hours_enabled');
         const quietSettings = document.getElementById('quiet_time_settings');
         quietToggle.addEventListener('change', function() {
-            if(this.checked) { quietSettings.classList.remove('hidden'); } 
-            else { quietSettings.classList.add('hidden'); }
+            if(this.checked) { quietSettings.classList.remove('hidden'); } else { quietSettings.classList.add('hidden'); }
         });
 
-        // Логіка показу/сховання "Нагадувань"
         const utilityToggle = document.getElementById('utility_reminders_enabled');
         const utilitySettings = document.getElementById('utility_settings');
         utilityToggle.addEventListener('change', function() {
-            if(this.checked) { utilitySettings.classList.remove('hidden'); } 
-            else { utilitySettings.classList.add('hidden'); }
+            if(this.checked) { utilitySettings.classList.remove('hidden'); } else { utilitySettings.classList.add('hidden'); }
         });
 
-        // Логіка показу/сховання "Меж напруги"
         const voltageToggle = document.getElementById('voltage');
         const voltageSettings = document.getElementById('voltage_settings');
         voltageToggle.addEventListener('change', function() {
-            if(this.checked) { voltageSettings.classList.remove('hidden'); } 
-            else { voltageSettings.classList.add('hidden'); }
+            if(this.checked) { voltageSettings.classList.remove('hidden'); } else { voltageSettings.classList.add('hidden'); }
         });
 
-        // Логіка кнопки "Встановити за замовчуванням"
+        const briefingToggle = document.getElementById('morning_briefing_enabled');
+        const briefingSettings = document.getElementById('briefing_settings');
+        briefingToggle.addEventListener('change', function() {
+            if(this.checked) { briefingSettings.classList.remove('hidden'); } else { briefingSettings.classList.add('hidden'); }
+        });
+
         document.getElementById('reset_btn').addEventListener('click', () => {
             const setCheck = (id, val) => document.getElementById(id).checked = val;
             const setInput = (id, val) => document.getElementById(id).value = val;
@@ -201,20 +205,20 @@
             setCheck('snowball_game', true);
             
             setCheck('utility_reminders_enabled', true);
-            setInput('utility_offset_days', "2");
-            setInput('utility_time', "10:00");
+            setInput('utility_offset_days', "2"); setInput('utility_time', "10:00");
 
             setCheck('quiet_hours_enabled', false);
-            setInput('quiet_hours_start', "23:00");
-            setInput('quiet_hours_end', "07:00");
+            setInput('quiet_hours_start', "23:00"); setInput('quiet_hours_end', "07:00");
             
-            setInput('voltage_low_limit', "198");
-            setInput('voltage_high_limit', "253");
+            setInput('voltage_low_limit', "198"); setInput('voltage_high_limit', "253");
+
+            setCheck('morning_briefing_enabled', false);
+            setInput('morning_briefing_time', "07:00");
             
-            // Оновлюємо інтерфейс
             quietToggle.dispatchEvent(new Event('change'));
             utilityToggle.dispatchEvent(new Event('change'));
-            voltageToggle.dispatchEvent(new Event('change')); // Оновлюємо блок напруги
+            voltageToggle.dispatchEvent(new Event('change'));
+            briefingToggle.dispatchEvent(new Event('change'));
             
             tg.showAlert("Налаштування скинуто до стандартних. Не забудьте зберегти їх.");
         });
@@ -252,7 +256,10 @@
                 quiet_hours_start: document.getElementById('quiet_hours_start').value,
                 quiet_hours_end: document.getElementById('quiet_hours_end').value,
                 voltage_low_limit: lowV,
-                voltage_high_limit: highV
+                voltage_high_limit: highV,
+
+                morning_briefing_enabled: document.getElementById('morning_briefing_enabled').checked,
+                morning_briefing_time: document.getElementById('morning_briefing_time').value
             };
             tg.sendData(JSON.stringify(data));
         });
