@@ -116,6 +116,7 @@
             setVal('voltage_low_limit'); setVal('voltage_high_limit');
             setBool('utility_reminders_enabled'); setVal('utility_offset_days'); setVal('utility_time');
             setBool('morning_briefing_enabled'); setVal('morning_briefing_time');
+            setBool('water_tds_alerts');
             
             if (urlParams.has('comm_style')) document.getElementById('comm_style').value = urlParams.get('comm_style');
 
@@ -145,6 +146,7 @@
             setCheck('emergency', true); setCheck('voltage', true); setCheck('water_alerts', true); 
             setCheck('network_status', true); setCheck('server_battery', true); setCheck('snowball_game', true);
             setCheck('easter_game', true); setCheck('eco_air_alerts', true); setCheck('eco_rad_alerts', true);
+            setCheck('water_tds_alerts', true);
             
             setCheck('utility_reminders_enabled', true); setInput('utility_offset_days', "2"); setInput('utility_time', "10:00");
             setCheck('quiet_hours_enabled', false); setInput('quiet_hours_start', "23:00"); setInput('quiet_hours_end', "07:00");
@@ -191,6 +193,7 @@
                 quiet_hours_end: document.getElementById('quiet_hours_end').value,
                 voltage_low_limit: lowV,
                 voltage_high_limit: highV,
+                water_tds_alerts: document.getElementById('water_tds_alerts').checked,
                 morning_briefing_enabled: document.getElementById('morning_briefing_enabled').checked,
                 morning_briefing_time: document.getElementById('morning_briefing_time').value,
                 comm_style: document.getElementById('comm_style').value
