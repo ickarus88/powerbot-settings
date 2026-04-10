@@ -6,86 +6,28 @@
     <title>Налаштування Щасливий Watt</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            color: var(--tg-theme-text-color, #000000);
-            margin: 0;
-            padding: 0;
-            padding-bottom: 80px;
-        }
-        .section {
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            margin-top: 20px;
-            border-top: 1px solid var(--tg-theme-hint-color, #ccc);
-            border-bottom: 1px solid var(--tg-theme-hint-color, #ccc);
-        }
-        .section-title {
-            padding: 10px 15px 5px;
-            font-size: 13px;
-            text-transform: uppercase;
-            color: var(--tg-theme-hint-color, #888);
-        }
-        .row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #eee);
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000000); margin: 0; padding: 0; padding-bottom: 80px; }
+        .section { background-color: var(--tg-theme-bg-color, #ffffff); margin-top: 20px; border-top: 1px solid var(--tg-theme-hint-color, #ccc); border-bottom: 1px solid var(--tg-theme-hint-color, #ccc); }
+        .section-title { padding: 10px 15px 5px; font-size: 13px; text-transform: uppercase; color: var(--tg-theme-hint-color, #888); }
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #eee); }
         .row:last-child { border-bottom: none; }
         .label { font-size: 16px; display: flex; align-items: center; gap: 10px; }
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .4s; border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute; content: ""; height: 24px; width: 24px; left: 2px; bottom: 2px;
-            background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         input:checked + .slider { background-color: var(--tg-theme-button-color, #3390ec); }
         input:checked + .slider:before { transform: translateX(22px); }
-        input[type="time"], input[type="number"] {
-            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            color: var(--tg-theme-text-color, #000); border: none; padding: 8px;
-            border-radius: 8px; font-size: 16px; width: 80px; text-align: center;
-        }
-        .style-select {
-            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            color: var(--tg-theme-text-color, #000);
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            cursor: pointer;
-            max-width: 180px;
-        }
+        input[type="time"], input[type="number"] { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); border: none; padding: 8px; border-radius: 8px; font-size: 16px; width: 80px; text-align: center; }
+        .style-select { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); border: none; padding: 8px 12px; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; max-width: 180px; }
         .hidden { display: none !important; }
         .desc { font-size: 12px; color: var(--tg-theme-hint-color, #888); padding: 5px 15px 15px; }
-        
-        .reset-btn-container {
-            padding: 20px 15px;
-            text-align: center;
-        }
-        .reset-btn {
-            background-color: var(--tg-theme-destructive-text-color, #ff3b30);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            cursor: pointer;
-        }
+        .reset-btn-container { padding: 20px 15px; text-align: center; }
+        .reset-btn { background-color: var(--tg-theme-destructive-text-color, #ff3b30); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- 1. ОСНОВНІ СПОВІЩЕННЯ -->
     <div class="section-title">Основні сповіщення</div>
     <div class="section">
         <div class="row"><span class="label">💡 Основні вмикання/вимикання</span><label class="switch"><input type="checkbox" id="main_events" checked><span class="slider"></span></label></div>
@@ -94,16 +36,35 @@
         <div class="row"><span class="label">🚨 Аварійні відключення</span><label class="switch"><input type="checkbox" id="emergency" checked><span class="slider"></span></label></div>
     </div>
 
-    <!-- 2. ДОДАТКОВІ СЕРВІСИ -->
+    <div class="section-title">Екологічні тривоги</div>
+    <div class="section">
+        <div class="row"><span class="label">🌫 Забруднення повітря (Смог)</span><label class="switch"><input type="checkbox" id="eco_air_alerts" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">☢️ Радіаційна небезпека</span><label class="switch"><input type="checkbox" id="eco_rad_alerts" checked><span class="slider"></span></label></div>
+    </div>
+    <div class="desc">Бот миттєво попередить, якщо на вулиці почнеться пожежа, смог або підвищиться радіаційний фон.</div>
+
+    <div class="section-title">Персональний асистент</div>
+    <div class="section">
+        <div class="row"><span class="label">🌅 Ранкове смарт-зведення</span><label class="switch"><input type="checkbox" id="morning_briefing_enabled"><span class="slider"></span></label></div>
+        <div id="briefing_settings" class="hidden">
+            <div class="row"><span class="label">Час отримання</span><input type="time" id="morning_briefing_time" value="08:00"></div>
+        </div>
+        <div class="row"><span class="label">📋 Нагадувати про лічильники</span><label class="switch"><input type="checkbox" id="utility_reminders_enabled" checked><span class="slider"></span></label></div>
+        <div id="utility_settings" class="hidden">
+            <div class="row"><span class="label">Днів до кінця місяця</span><input type="number" id="utility_offset_days" value="2" min="1" max="7"></div>
+            <div class="row"><span class="label">Час нагадування</span><input type="time" id="utility_time" value="10:00"></div>
+        </div>
+    </div>
+
     <div class="section-title">Додаткові сервіси</div>
     <div class="section">
         <div class="row"><span class="label">🚰 Статус водопостачання</span><label class="switch"><input type="checkbox" id="water_alerts" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">🌐 Статус інтернету</span><label class="switch"><input type="checkbox" id="network_status" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">🤖 Сповіщення про роботу бота</span><label class="switch"><input type="checkbox" id="server_battery" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">❄️ Сніжкова гра</span><label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🥚 Великодня битка</span><label class="switch"><input type="checkbox" id="easter_game" checked><span class="slider"></span></label></div>
     </div>
 
-    <!-- 3. РЕЖИМ НЕ ТУРБУВАТИ -->
     <div class="section-title">Режим "Не турбувати"</div>
     <div class="section">
         <div class="row"><span class="label">🌙 Режим 'Не турбувати'</span><label class="switch"><input type="checkbox" id="quiet_hours_enabled"><span class="slider"></span></label></div>
@@ -112,25 +73,7 @@
             <div class="row"><span class="label">Кінець</span><input type="time" id="quiet_hours_end" value="07:00"></div>
         </div>
     </div>
-    <div class="desc">У цей час бот не надсилатиме жодних сповіщень.</div>
 
-    <!-- 4. ПЕРСОНАЛЬНИЙ АСИСТЕНТ -->
-    <div class="section-title">Персональний асистент</div>
-    <div class="section">
-        <div class="row"><span class="label">🌅 Ранкове смарт-зведення</span><label class="switch"><input type="checkbox" id="morning_briefing_enabled"><span class="slider"></span></label></div>
-        <div id="briefing_settings" class="hidden">
-            <div class="row"><span class="label">Час отримання</span><input type="time" id="morning_briefing_time" value="07:00"></div>
-        </div>
-        
-        <div class="row"><span class="label">📋 Нагадувати про лічильники</span><label class="switch"><input type="checkbox" id="utility_reminders_enabled" checked><span class="slider"></span></label></div>
-        <div id="utility_settings" class="hidden">
-            <div class="row"><span class="label">Днів до кінця місяця</span><input type="number" id="utility_offset_days" value="2" min="1" max="7"></div>
-            <div class="row"><span class="label">Час нагадування</span><input type="time" id="utility_time" value="10:00"></div>
-        </div>
-    </div>
-    <div class="desc">Бот щоранку надсилатиме зведення та нагадуватиме передати показники лічильників.</div>
-
-    <!-- 5. МЕЖІ НАПРУГИ -->
     <div class="section-title">Межі напруги (Вольти)</div>
     <div class="section">
         <div class="row"><span class="label">⚡ Повідомлення про напругу</span><label class="switch"><input type="checkbox" id="voltage" checked><span class="slider"></span></label></div>
@@ -139,9 +82,7 @@
             <div class="row"><span class="label">🔺 Верхня межа (В)</span><input type="number" id="voltage_high_limit" value="253" min="230" max="300"></div>
         </div>
     </div>
-    <div class="desc">Бот попередить, якщо напруга вийде за ці межі.</div>
 
-    <!-- 6. СТИЛЬ СПІЛКУВАННЯ -->
     <div class="section-title">Стиль спілкування бота</div>
     <div class="section">
         <div class="row">
@@ -153,7 +94,6 @@
             </select>
         </div>
     </div>
-    <div class="desc">Визначає, як бот буде повідомляти про події.</div>
 
     <div class="reset-btn-container">
         <button id="reset_btn" class="reset-btn">🔄 Встановити за замовчуванням</button>
@@ -165,35 +105,18 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
-            
-            const setBool = (id) => {
-                if (urlParams.has(id)) {
-                    document.getElementById(id).checked = (urlParams.get(id) === '1');
-                }
-            };
-            
-            const setVal = (id) => {
-                if (urlParams.has(id)) {
-                    document.getElementById(id).value = urlParams.get(id);
-                }
-            };
+            const setBool = (id) => { if (urlParams.has(id)) document.getElementById(id).checked = (urlParams.get(id) === '1'); };
+            const setVal = (id) => { if (urlParams.has(id)) document.getElementById(id).value = urlParams.get(id); };
 
-            setBool('main_events'); setBool('warnings'); setBool('schedule_changes');
-            setBool('emergency'); setBool('voltage'); setBool('water_alerts');
-            setBool('network_status'); setBool('server_battery'); setBool('snowball_game');
-            setBool('quiet_hours_enabled');
-            setVal('quiet_hours_start'); setVal('quiet_hours_end');
+            setBool('main_events'); setBool('warnings'); setBool('schedule_changes'); setBool('emergency'); 
+            setBool('voltage'); setBool('water_alerts'); setBool('network_status'); setBool('server_battery'); 
+            setBool('snowball_game'); setBool('easter_game'); setBool('eco_air_alerts'); setBool('eco_rad_alerts');
+            setBool('quiet_hours_enabled'); setVal('quiet_hours_start'); setVal('quiet_hours_end');
             setVal('voltage_low_limit'); setVal('voltage_high_limit');
+            setBool('utility_reminders_enabled'); setVal('utility_offset_days'); setVal('utility_time');
+            setBool('morning_briefing_enabled'); setVal('morning_briefing_time');
             
-            setBool('utility_reminders_enabled');
-            setVal('utility_offset_days'); setVal('utility_time');
-            setBool('morning_briefing_enabled');
-            setVal('morning_briefing_time');
-            
-            // Завантажуємо стиль спілкування
-            if (urlParams.has('comm_style')) {
-                document.getElementById('comm_style').value = urlParams.get('comm_style');
-            }
+            if (urlParams.has('comm_style')) document.getElementById('comm_style').value = urlParams.get('comm_style');
 
             document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
             document.getElementById('utility_reminders_enabled').dispatchEvent(new Event('change'));
@@ -201,60 +124,39 @@
             document.getElementById('morning_briefing_enabled').dispatchEvent(new Event('change'));
         });
 
-        const quietToggle = document.getElementById('quiet_hours_enabled');
-        const quietSettings = document.getElementById('quiet_time_settings');
-        quietToggle.addEventListener('change', function() {
-            if(this.checked) { quietSettings.classList.remove('hidden'); } else { quietSettings.classList.add('hidden'); }
-        });
+        const toggleVisibility = (toggleId, settingsId) => {
+            document.getElementById(toggleId).addEventListener('change', function() {
+                if(this.checked) document.getElementById(settingsId).classList.remove('hidden');
+                else document.getElementById(settingsId).classList.add('hidden');
+            });
+        };
 
-        const utilityToggle = document.getElementById('utility_reminders_enabled');
-        const utilitySettings = document.getElementById('utility_settings');
-        utilityToggle.addEventListener('change', function() {
-            if(this.checked) { utilitySettings.classList.remove('hidden'); } else { utilitySettings.classList.add('hidden'); }
-        });
-
-        const voltageToggle = document.getElementById('voltage');
-        const voltageSettings = document.getElementById('voltage_settings');
-        voltageToggle.addEventListener('change', function() {
-            if(this.checked) { voltageSettings.classList.remove('hidden'); } else { voltageSettings.classList.add('hidden'); }
-        });
-
-        const briefingToggle = document.getElementById('morning_briefing_enabled');
-        const briefingSettings = document.getElementById('briefing_settings');
-        briefingToggle.addEventListener('change', function() {
-            if(this.checked) { briefingSettings.classList.remove('hidden'); } else { briefingSettings.classList.add('hidden'); }
-        });
+        toggleVisibility('quiet_hours_enabled', 'quiet_time_settings');
+        toggleVisibility('utility_reminders_enabled', 'utility_settings');
+        toggleVisibility('voltage', 'voltage_settings');
+        toggleVisibility('morning_briefing_enabled', 'briefing_settings');
 
         document.getElementById('reset_btn').addEventListener('click', () => {
             const setCheck = (id, val) => document.getElementById(id).checked = val;
             const setInput = (id, val) => document.getElementById(id).value = val;
 
-            setCheck('main_events', true); setCheck('warnings', true);
-            setCheck('schedule_changes', true); setCheck('emergency', true);
-            setCheck('voltage', true); setCheck('water_alerts', true);
-            setCheck('network_status', true); setCheck('server_battery', true);
-            setCheck('snowball_game', true);
+            setCheck('main_events', true); setCheck('warnings', true); setCheck('schedule_changes', true); 
+            setCheck('emergency', true); setCheck('voltage', true); setCheck('water_alerts', true); 
+            setCheck('network_status', true); setCheck('server_battery', true); setCheck('snowball_game', true);
+            setCheck('easter_game', true); setCheck('eco_air_alerts', true); setCheck('eco_rad_alerts', true);
             
-            setCheck('utility_reminders_enabled', true);
-            setInput('utility_offset_days', "2"); setInput('utility_time', "10:00");
-
-            setCheck('quiet_hours_enabled', false);
-            setInput('quiet_hours_start', "23:00"); setInput('quiet_hours_end', "07:00");
-            
+            setCheck('utility_reminders_enabled', true); setInput('utility_offset_days', "2"); setInput('utility_time', "10:00");
+            setCheck('quiet_hours_enabled', false); setInput('quiet_hours_start', "23:00"); setInput('quiet_hours_end', "07:00");
             setInput('voltage_low_limit', "198"); setInput('voltage_high_limit', "253");
-
-            setCheck('morning_briefing_enabled', true);
-            setInput('morning_briefing_time', "07:30");
-            
-            // Скидаємо стиль на звичайний
+            setCheck('morning_briefing_enabled', true); setInput('morning_briefing_time', "08:00");
             document.getElementById('comm_style').value = "default";
             
-            quietToggle.dispatchEvent(new Event('change'));
-            utilityToggle.dispatchEvent(new Event('change'));
-            voltageToggle.dispatchEvent(new Event('change'));
-            briefingToggle.dispatchEvent(new Event('change'));
+            document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
+            document.getElementById('utility_reminders_enabled').dispatchEvent(new Event('change'));
+            document.getElementById('voltage').dispatchEvent(new Event('change'));
+            document.getElementById('morning_briefing_enabled').dispatchEvent(new Event('change'));
             
-            tg.showAlert("Налаштування скинуто до стандартних. Не забудьте зберегти їх.");
+            tg.showAlert("Налаштування скинуто до стандартних.");
         });
 
         tg.MainButton.textColor = "#ffffff";
@@ -265,11 +167,7 @@
         Telegram.WebApp.onEvent('mainButtonClicked', function() {
             let lowV = parseInt(document.getElementById('voltage_low_limit').value);
             let highV = parseInt(document.getElementById('voltage_high_limit').value);
-            
-            if (lowV >= highV) {
-                tg.showAlert("Помилка: Нижня межа напруги не може бути більшою за верхню!");
-                return;
-            }
+            if (lowV >= highV) { tg.showAlert("Помилка: Нижня межа напруги не може бути більшою за верхню!"); return; }
 
             let data = {
                 main_events: document.getElementById('main_events').checked,
@@ -281,21 +179,19 @@
                 network_status: document.getElementById('network_status').checked,
                 server_battery: document.getElementById('server_battery').checked,
                 snowball_game: document.getElementById('snowball_game').checked,
-                
+                easter_game: document.getElementById('easter_game').checked,
+                eco_air_alerts: document.getElementById('eco_air_alerts').checked,
+                eco_rad_alerts: document.getElementById('eco_rad_alerts').checked,
                 utility_reminders_enabled: document.getElementById('utility_reminders_enabled').checked,
                 utility_offset_days: parseInt(document.getElementById('utility_offset_days').value),
                 utility_time: document.getElementById('utility_time').value,
-                
                 quiet_hours_enabled: document.getElementById('quiet_hours_enabled').checked,
                 quiet_hours_start: document.getElementById('quiet_hours_start').value,
                 quiet_hours_end: document.getElementById('quiet_hours_end').value,
                 voltage_low_limit: lowV,
                 voltage_high_limit: highV,
-
                 morning_briefing_enabled: document.getElementById('morning_briefing_enabled').checked,
                 morning_briefing_time: document.getElementById('morning_briefing_time').value,
-                
-                // Передаємо обраний стиль
                 comm_style: document.getElementById('comm_style').value
             };
             tg.sendData(JSON.stringify(data));
