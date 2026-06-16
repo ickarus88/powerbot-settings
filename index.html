@@ -62,6 +62,7 @@
         <div class="row"><span class="label">💧 Якість води (TDS)</span><label class="switch"><input type="checkbox" id="water_tds_alerts" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">🌐 Статус інтернету</span><label class="switch"><input type="checkbox" id="network_status" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">🤖 Сповіщення про роботу бота</span><label class="switch"><input type="checkbox" id="server_battery" checked><span class="slider"></span></label></div>
+        <div class="row"><span class="label">🛒 Нові оголошення в Маркеті</span><label class="switch"><input type="checkbox" id="market_new_items"><span class="slider"></span></label></div>
         <div class="row"><span class="label">❄️ Сніжкова гра</span><label class="switch"><input type="checkbox" id="snowball_game" checked><span class="slider"></span></label></div>
         <div class="row"><span class="label">🥚 Великодня битка</span><label class="switch"><input type="checkbox" id="easter_game" checked><span class="slider"></span></label></div>
     </div>
@@ -116,7 +117,7 @@
             setVal('voltage_low_limit'); setVal('voltage_high_limit');
             setBool('utility_reminders_enabled'); setVal('utility_offset_days'); setVal('utility_time');
             setBool('morning_briefing_enabled'); setVal('morning_briefing_time');
-            setBool('water_tds_alerts');
+            setBool('water_tds_alerts'); setBool('market_new_items');
             
             if (urlParams.has('comm_style')) document.getElementById('comm_style').value = urlParams.get('comm_style');
 
@@ -146,7 +147,7 @@
             setCheck('emergency', true); setCheck('voltage', true); setCheck('water_alerts', true); 
             setCheck('network_status', true); setCheck('server_battery', true); setCheck('snowball_game', true);
             setCheck('easter_game', true); setCheck('eco_air_alerts', true); setCheck('eco_rad_alerts', true);
-            setCheck('water_tds_alerts', true);
+            setCheck('water_tds_alerts', true); setCheck('market_new_items', false); // За замовчуванням вимкнено
             
             setCheck('utility_reminders_enabled', true); setInput('utility_offset_days', "2"); setInput('utility_time', "10:00");
             setCheck('quiet_hours_enabled', false); setInput('quiet_hours_start', "23:00"); setInput('quiet_hours_end', "07:00");
@@ -194,6 +195,7 @@
                 voltage_low_limit: lowV,
                 voltage_high_limit: highV,
                 water_tds_alerts: document.getElementById('water_tds_alerts').checked,
+                market_new_items: document.getElementById('market_new_items').checked,
                 morning_briefing_enabled: document.getElementById('morning_briefing_enabled').checked,
                 morning_briefing_time: document.getElementById('morning_briefing_time').value,
                 comm_style: document.getElementById('comm_style').value
