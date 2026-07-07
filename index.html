@@ -137,6 +137,10 @@
             setBool('utility_reminders_enabled'); setVal('utility_offset_days'); setVal('utility_time');
             setBool('morning_briefing_enabled'); setVal('morning_briefing_time');
             setBool('water_tds_alerts'); setBool('market_new_items');
+            setBool('smart_alarm_enabled'); setVal('alarm_arrival_time'); setVal('alarm_prep_time');
+            
+            if (urlParams.has('alarm_route')) document.getElementById('alarm_route').value = urlParams.get('alarm_route');
+            document.getElementById('smart_alarm_enabled').dispatchEvent(new Event('change'));
             
             if (urlParams.has('comm_style')) document.getElementById('comm_style').value = urlParams.get('comm_style');
 
