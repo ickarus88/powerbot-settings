@@ -56,6 +56,25 @@
         </div>
     </div>
 
+    <div class="section-title">Розумний Будильник (Smart Wake-Up)</div>
+    <div class="section">
+        <div class="row"><span class="label">⏰ Увімкнути будильник</span><label class="switch"><input type="checkbox" id="smart_alarm_enabled"><span class="slider"></span></label></div>
+        <div id="alarm_settings" class="hidden">
+            <div class="row"><span class="label">О котрій треба бути на місці?</span><input type="time" id="alarm_arrival_time" value="09:00"></div>
+            <div class="row"><span class="label">Час на збори (хвилин)</span><input type="number" id="alarm_prep_time" value="45" min="5" max="180"></div>
+            <div class="row">
+                <span class="label">Маршрут</span>
+                <select id="alarm_route" class="style-select">
+                    <option value="akadem">м. Академмістечко</option>
+                    <option value="zhytomyrska">м. Житомирська</option>
+                    <option value="teremki">м. Теремки</option>
+                    <option value="ipodrom">м. Іподром</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="desc">Бот сам перевірить затори та погоду вранці і розбудить вас саме тоді, коли потрібно виходити, щоб не запізнитися.</div>
+    
     <div class="section-title">Додаткові сервіси</div>
     <div class="section">
         <div class="row"><span class="label">🚰 Статус водопостачання</span><label class="switch"><input type="checkbox" id="water_alerts" checked><span class="slider"></span></label></div>
