@@ -63,7 +63,7 @@
     <div class="section-title">Розумний Будильник (Smart Wake-Up)</div>
     <div class="section">
         <div class="row"><span class="label">⏰ Увімкнути будильник</span><label class="switch"><input type="checkbox" id="smart_alarm_enabled"><span class="slider"></span></label></div>
-    <div id="alarm_settings" class="hidden">
+        <div id="alarm_settings" class="hidden">
             <div class="row"><span class="label">О котрій треба бути на місці?</span><input type="time" id="alarm_arrival_time" value="09:00"></div>
             <div class="row"><span class="label">Час на збори (хвилин)</span><input type="number" id="alarm_prep_time" value="45" min="5" max="180"></div>
             <div class="row">
@@ -78,9 +78,8 @@
             </div>
             <div class="row hidden" id="custom_address_row" style="flex-direction: column; align-items: flex-start; background: var(--tg-theme-bg-color, #fff);">
                 <span class="label" style="font-size: 13px; color: var(--tg-theme-hint-color);">Введіть адресу (напр: Хрещатик 22):</span>
-                <input type="text" id="alarm_custom_address" class="action-input" style="margin-top: 5px; padding: 10px; width: 100%;">
+                <input type="text" id="alarm_custom_address" class="action-input" style="margin-top: 5px; padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 8px;">
             </div>
-        </div>
         </div>
     </div>
     <div class="desc">Бот сам перевірить затори та погоду вранці і розбудить вас саме тоді, коли потрібно виходити, щоб не запізнитися.</div>
@@ -151,8 +150,9 @@
             
             if (urlParams.has('alarm_route')) document.getElementById('alarm_route').value = urlParams.get('alarm_route');
             if (urlParams.has('comm_style')) document.getElementById('comm_style').value = urlParams.get('comm_style');
-            if (urlParams.has('alarm_custom_address')) document.getElementById('alarm_custom_address').value = urlParams.get('alarm_custom_address');
-            document.getElementById('alarm_route').dispatchEvent(new Event('change')); // Оновлюємо видимість
+            if (urlParams.has('alarm_custom_address')) document.getElementById('alarm_custom_address').value = decodeURIComponent(urlParams.get('alarm_custom_address'));
+
+            document.getElementById('alarm_route').dispatchEvent(new Event('change'));
 
             // Ініціалізація видимості прихованих меню
             document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
@@ -174,7 +174,8 @@
         toggleVisibility('voltage', 'voltage_settings');
         toggleVisibility('morning_briefing_enabled', 'briefing_settings');
         toggleVisibility('smart_alarm_enabled', 'alarm_settings');
-            // Показуємо поле вводу, якщо обрано "Власна адреса"
+
+        // Показуємо поле вводу, якщо обрано "Власна адреса"
         document.getElementById('alarm_route').addEventListener('change', function() {
             if(this.value === 'custom') {
                 document.getElementById('custom_address_row').classList.remove('hidden');
@@ -182,6 +183,7 @@
                 document.getElementById('custom_address_row').classList.add('hidden');
             }
         });
+
         document.getElementById('reset_btn').addEventListener('click', () => {
             const setCheck = (id, val) => document.getElementById(id).checked = val;
             const setInput = (id, val) => document.getElementById(id).value = val;
@@ -200,6 +202,7 @@
             // Скидання будильника
             setCheck('smart_alarm_enabled', false); setInput('alarm_arrival_time', "09:00"); setInput('alarm_prep_time', "45");
             document.getElementById('alarm_route').value = "teremki";
+            document.getElementById('alarm_custom_address').value = "";
             
             document.getElementById('comm_style').value = "default";
             
@@ -208,6 +211,7 @@
             document.getElementById('voltage').dispatchEvent(new Event('change'));
             document.getElementById('morning_briefing_enabled').dispatchEvent(new Event('change'));
             document.getElementById('smart_alarm_enabled').dispatchEvent(new Event('change'));
+            document.getElementById('alarm_route').dispatchEvent(new Event('change'));
             
             tg.showAlert("Налаштування скинуто до стандартних.");
         });
@@ -252,7 +256,7 @@
                 alarm_arrival_time: document.getElementById('alarm_arrival_time').value,
                 alarm_prep_time: parseInt(document.getElementById('alarm_prep_time').value),
                 alarm_route: document.getElementById('alarm_route').value,
-                "alarm_custom_address": settings.get("alarm_custom_address", "")
+                alarm_custom_address: document.getElementById('alarm_custom_address').value // ТЕПЕР ПРАВИЛЬНО!
             };
             tg.sendData(JSON.stringify(data));
         });
