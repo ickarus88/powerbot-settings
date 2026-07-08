@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- АНТИ-КЕШ ТЕГИ -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Налаштування Щасливий Watt</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -67,7 +71,7 @@
                 <select id="alarm_route" class="style-select">
                     <option value="akadem">м. Академмістечко</option>
                     <option value="zhytomyrska">м. Житомирська</option>
-                    <option value="teremki">м. Теремки</option>
+                    <option value="teremki" selected>м. Теремки</option>
                     <option value="ipodrom">м. Іподром</option>
                 </select>
             </div>
@@ -228,7 +232,7 @@
                 market_new_items: document.getElementById('market_new_items').checked,
                 morning_briefing_enabled: document.getElementById('morning_briefing_enabled').checked,
                 morning_briefing_time: document.getElementById('morning_briefing_time').value,
-                comm_style: document.getElementById('comm_style').value, // <-- КОМА ТЕПЕР ТУТ Є!
+                comm_style: document.getElementById('comm_style').value,
                 smart_alarm_enabled: document.getElementById('smart_alarm_enabled').checked,
                 alarm_arrival_time: document.getElementById('alarm_arrival_time').value,
                 alarm_prep_time: parseInt(document.getElementById('alarm_prep_time').value),
