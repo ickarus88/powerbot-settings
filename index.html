@@ -161,6 +161,7 @@
         toggleVisibility('utility_reminders_enabled', 'utility_settings');
         toggleVisibility('voltage', 'voltage_settings');
         toggleVisibility('morning_briefing_enabled', 'briefing_settings');
+        toggleVisibility('smart_alarm_enabled', 'alarm_settings');
 
         document.getElementById('reset_btn').addEventListener('click', () => {
             const setCheck = (id, val) => document.getElementById(id).checked = val;
@@ -222,6 +223,10 @@
                 morning_briefing_enabled: document.getElementById('morning_briefing_enabled').checked,
                 morning_briefing_time: document.getElementById('morning_briefing_time').value,
                 comm_style: document.getElementById('comm_style').value
+                smart_alarm_enabled: document.getElementById('smart_alarm_enabled').checked,
+                alarm_arrival_time: document.getElementById('alarm_arrival_time').value,
+                alarm_prep_time: parseInt(document.getElementById('alarm_prep_time').value),
+                alarm_route: document.getElementById('alarm_route').value,
             };
             tg.sendData(JSON.stringify(data));
         });
