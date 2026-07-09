@@ -79,6 +79,7 @@
             <div class="row hidden" id="custom_address_row" style="flex-direction: column; align-items: flex-start; background: var(--tg-theme-bg-color, #fff);">
                 <span class="label" style="font-size: 13px; color: var(--tg-theme-hint-color);">Введіть адресу (напр: Хрещатик 22):</span>
                 <input type="text" id="alarm_custom_address" class="action-input" style="margin-top: 5px; padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 8px;">
+                <button class="btn btn-outline" style="margin-top: 10px;" onclick="requestMapLocation()">📍 Вказати на карті</button>
             </div>
         </div>
     </div>
@@ -282,6 +283,10 @@
             };
             tg.sendData(JSON.stringify(data));
         });
+        function requestMapLocation() {
+            // Відправляємо боту спеціальну команду і закриваємо Web App
+            tg.sendData(JSON.stringify({ action: "request_location" }));
+        }
     </script>
 </body>
 </html>
