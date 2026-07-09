@@ -28,6 +28,13 @@
         .desc { font-size: 12px; color: var(--tg-theme-hint-color, #888); padding: 5px 15px 15px; }
         .reset-btn-container { padding: 20px 15px; text-align: center; }
         .reset-btn { background-color: var(--tg-theme-destructive-text-color, #ff3b30); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; }
+        
+        /* --- НОВІ СТИЛІ ДЛЯ КАРТИ ТА АДРЕСИ --- */
+        .custom-address-container { display: flex; flex-direction: column; width: 100%; box-sizing: border-box; gap: 10px; }
+        .custom-address-input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid var(--tg-theme-hint-color, #ccc); border-radius: 8px; font-size: 15px; background-color: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); outline: none; transition: 0.2s; }
+        .custom-address-input:focus { border-color: var(--tg-theme-button-color, #3390ec); }
+        .btn-map { background-color: var(--tg-theme-secondary-bg-color, #e3f2fd); color: var(--tg-theme-button-color, #2481cc); border: 1px solid var(--tg-theme-button-color, #2481cc); padding: 10px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-map:active { background-color: var(--tg-theme-button-color, #2481cc); color: #ffffff; }
     </style>
 </head>
 <body>
@@ -62,7 +69,7 @@
 
     <div class="section-title">Smart-Планувальник поїздок</div>
     <div class="section">
-        <div class="row"><span class="label">⏰ Smart-Планувальник поїздок</span><label class="switch"><input type="checkbox" id="smart_alarm_enabled"><span class="slider"></span></label></div>
+        <div class="row"><span class="label">⏰ Увімкнути планувальник</span><label class="switch"><input type="checkbox" id="smart_alarm_enabled"><span class="slider"></span></label></div>
         <div id="alarm_settings" class="hidden">
             <div class="row"><span class="label">О котрій треба бути на місці?</span><input type="time" id="alarm_arrival_time" value="09:00"></div>
             <div class="row"><span class="label">Час на збори (хвилин)</span><input type="number" id="alarm_prep_time" value="45" min="5" max="180"></div>
@@ -76,10 +83,15 @@
                     <option value="custom">📍 Власна адреса...</option>
                 </select>
             </div>
-            <div class="row hidden" id="custom_address_row" style="flex-direction: column; align-items: flex-start; background: var(--tg-theme-bg-color, #fff);">
-                <span class="label" style="font-size: 13px; color: var(--tg-theme-hint-color);">Введіть адресу (напр: Хрещатик 22):</span>
-                <input type="text" id="alarm_custom_address" class="action-input" style="margin-top: 5px; padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 8px;">
-                <button class="btn btn-outline" style="margin-top: 10px;" onclick="requestMapLocation()">📍 Вказати на карті</button>
+            <!-- ВИПРАВЛЕНИЙ БЛОК ДЛЯ АДРЕСИ ТА КНОПКИ -->
+            <div class="row hidden" id="custom_address_row">
+                <div class="custom-address-container">
+                    <span class="label" style="font-size: 13px; color: var(--tg-theme-hint-color);">Введіть адресу (напр: Хрещатик 22):</span>
+                    <input type="text" id="alarm_custom_address" class="custom-address-input" placeholder="Вулиця, номер будинку...">
+                    <button class="btn-map" onclick="requestMapLocation()">
+                        <span style="font-size: 18px;">📍</span> Вказати точку на карті
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -92,7 +104,7 @@
             <div class="row" style="flex-direction: column; align-items: flex-start; background: var(--tg-theme-bg-color, #fff);">
                 <span class="label" style="font-size: 14px; color: var(--tg-theme-text-color);">ID довірених контактів (через кому):</span>
                 <span style="font-size: 11px; color: var(--tg-theme-hint-color); margin-bottom: 5px;">Щоб дізнатися ID, рідні мають написати боту команду /my_id</span>
-                <input type="text" id="safe_path_contacts" class="action-input" style="margin-top: 0; padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 8px;" placeholder="Напр: 123456789, 987654321">
+                <input type="text" id="safe_path_contacts" class="custom-address-input" style="margin-top: 5px;" placeholder="Напр: 123456789, 987654321">
             </div>
             <div class="row"><span class="label">Інтервал перевірки (хв)</span><input type="number" id="safe_path_interval" value="3" min="1" max="15"></div>
         </div>
@@ -283,6 +295,7 @@
             };
             tg.sendData(JSON.stringify(data));
         });
+        
         function requestMapLocation() {
             // Відправляємо боту спеціальну команду і закриваємо Web App
             tg.sendData(JSON.stringify({ action: "request_location" }));
