@@ -103,13 +103,33 @@
         tg.MainButton.show();
 
         Telegram.WebApp.onEvent('mainButtonClicked', function() {
-            let data = {
+            // Формуємо безпечний пакет даних
+            let payload = {
+                initData: tg.initData,
                 action: "save_safepath",
-                safe_path_enabled: document.getElementById('safe_path_enabled').checked,
-                safe_path_contacts: document.getElementById('safe_path_contacts').value,
-                safe_path_interval: parseInt(document.getElementById('safe_path_interval').value)
+                settings: {
+                    safe_path_enabled: document.getElementById('safe_path_enabled').checked,
+                    safe_path_contacts: document.getElementById('safe_path_contacts').value,
+                    safe_path_interval: parseInt(document.getElementById('safe_path_interval').value)
+                }
             };
-            tg.sendData(JSON.stringify(data));
+            
+            // Відправляємо дані на наш власний сервер
+            fetch('https://shop.rebro.pp.ua/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) {
+                    tg.showAlert(data.error);
+                } else {
+                    tg.showAlert("✅ Налаштування успішно збережено!");
+                    setTimeout(() => tg.close(), 1000); // Закриваємо вікно через 1 секунду
+                }
+            })
+            .catch(err => tg.showAlert("❌ Помилка з'єднання з сервером."));
         });
     </script>
 </body>
