@@ -28,13 +28,8 @@
         .desc { font-size: 12px; color: var(--tg-theme-hint-color, #888); padding: 5px 15px 15px; }
         .reset-btn-container { padding: 20px 15px; text-align: center; }
         .reset-btn { background-color: var(--tg-theme-destructive-text-color, #ff3b30); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; }
-        
-        /* --- НОВІ СТИЛІ ДЛЯ КАРТИ ТА АДРЕСИ --- */
-        .custom-address-container { display: flex; flex-direction: column; width: 100%; box-sizing: border-box; gap: 10px; }
-        .custom-address-input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid var(--tg-theme-hint-color, #ccc); border-radius: 8px; font-size: 15px; background-color: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); outline: none; transition: 0.2s; }
-        .custom-address-input:focus { border-color: var(--tg-theme-button-color, #3390ec); }
-        .btn-map { background-color: var(--tg-theme-secondary-bg-color, #e3f2fd); color: var(--tg-theme-button-color, #2481cc); border: 1px solid var(--tg-theme-button-color, #2481cc); padding: 10px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
-        .btn-map:active { background-color: var(--tg-theme-button-color, #2481cc); color: #ffffff; }
+        .text-input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid var(--tg-theme-hint-color, #ccc); border-radius: 8px; font-size: 15px; background-color: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); outline: none; transition: 0.2s; }
+        .text-input:focus { border-color: var(--tg-theme-button-color, #3390ec); }
     </style>
 </head>
 <body>
@@ -67,36 +62,6 @@
         </div>
     </div>
 
-    <div class="section-title">Smart-Планувальник поїздок</div>
-    <div class="section">
-        <div class="row"><span class="label">⏰ Увімкнути планувальник</span><label class="switch"><input type="checkbox" id="smart_alarm_enabled"><span class="slider"></span></label></div>
-        <div id="alarm_settings" class="hidden">
-            <div class="row"><span class="label">О котрій треба бути на місці?</span><input type="time" id="alarm_arrival_time" value="09:00"></div>
-            <div class="row"><span class="label">Час на збори (хвилин)</span><input type="number" id="alarm_prep_time" value="45" min="5" max="180"></div>
-            <div class="row">
-                <span class="label">Маршрут</span>
-                <select id="alarm_route" class="style-select">
-                    <option value="akadem">м. Академмістечко</option>
-                    <option value="zhytomyrska">м. Житомирська</option>
-                    <option value="teremki">м. Теремки</option>
-                    <option value="ipodrom">м. Іподром</option>
-                    <option value="custom">📍 Власна адреса...</option>
-                </select>
-            </div>
-            <!-- ВИПРАВЛЕНИЙ БЛОК ДЛЯ АДРЕСИ ТА КНОПКИ -->
-            <div class="row hidden" id="custom_address_row">
-                <div class="custom-address-container">
-                    <span class="label" style="font-size: 13px; color: var(--tg-theme-hint-color);">Введіть адресу (напр: Хрещатик 22):</span>
-                    <input type="text" id="alarm_custom_address" class="custom-address-input" placeholder="Вулиця, номер будинку...">
-                    <button class="btn-map" onclick="requestMapLocation()">
-                        <span style="font-size: 18px;">📍</span> Вказати точку на карті
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="desc">Бот сам перевірить затори та погоду вранці і розбудить вас саме тоді, коли потрібно виходити, щоб не запізнитися.</div>
-
     <div class="section-title">🛡 Безпечний шлях (Night Guardian)</div>
     <div class="section">
         <div class="row"><span class="label">🛡 Увімкнути функцію</span><label class="switch"><input type="checkbox" id="safe_path_enabled"><span class="slider"></span></label></div>
@@ -104,7 +69,7 @@
             <div class="row" style="flex-direction: column; align-items: flex-start; background: var(--tg-theme-bg-color, #fff);">
                 <span class="label" style="font-size: 14px; color: var(--tg-theme-text-color);">ID довірених контактів (через кому):</span>
                 <span style="font-size: 11px; color: var(--tg-theme-hint-color); margin-bottom: 5px;">Щоб дізнатися ID, рідні мають написати боту команду /my_id</span>
-                <input type="text" id="safe_path_contacts" class="custom-address-input" style="margin-top: 5px;" placeholder="Напр: 123456789, 987654321">
+                <input type="text" id="safe_path_contacts" class="text-input" style="margin-top: 5px;" placeholder="Напр: 123456789, 987654321">
             </div>
             <div class="row"><span class="label">Інтервал перевірки (хв)</span><input type="number" id="safe_path_interval" value="3" min="1" max="15"></div>
         </div>
@@ -173,21 +138,15 @@
             setBool('utility_reminders_enabled'); setVal('utility_offset_days'); setVal('utility_time');
             setBool('morning_briefing_enabled'); setVal('morning_briefing_time');
             setBool('water_tds_alerts'); setBool('market_new_items');
-            setBool('smart_alarm_enabled'); setVal('alarm_arrival_time'); setVal('alarm_prep_time');
             setBool('safe_path_enabled'); setVal('safe_path_contacts'); setVal('safe_path_interval');
             
-            if (urlParams.has('alarm_route')) document.getElementById('alarm_route').value = urlParams.get('alarm_route');
             if (urlParams.has('comm_style')) document.getElementById('comm_style').value = urlParams.get('comm_style');
-            if (urlParams.has('alarm_custom_address')) document.getElementById('alarm_custom_address').value = decodeURIComponent(urlParams.get('alarm_custom_address'));
-
-            document.getElementById('alarm_route').dispatchEvent(new Event('change'));
 
             // Ініціалізація видимості прихованих меню
             document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
             document.getElementById('utility_reminders_enabled').dispatchEvent(new Event('change'));
             document.getElementById('voltage').dispatchEvent(new Event('change'));
             document.getElementById('morning_briefing_enabled').dispatchEvent(new Event('change'));
-            document.getElementById('smart_alarm_enabled').dispatchEvent(new Event('change'));
             document.getElementById('safe_path_enabled').dispatchEvent(new Event('change'));
         });
 
@@ -202,17 +161,7 @@
         toggleVisibility('utility_reminders_enabled', 'utility_settings');
         toggleVisibility('voltage', 'voltage_settings');
         toggleVisibility('morning_briefing_enabled', 'briefing_settings');
-        toggleVisibility('smart_alarm_enabled', 'alarm_settings');
         toggleVisibility('safe_path_enabled', 'safe_path_settings');
-
-        // Показуємо поле вводу, якщо обрано "Власна адреса"
-        document.getElementById('alarm_route').addEventListener('change', function() {
-            if(this.value === 'custom') {
-                document.getElementById('custom_address_row').classList.remove('hidden');
-            } else {
-                document.getElementById('custom_address_row').classList.add('hidden');
-            }
-        });
 
         document.getElementById('reset_btn').addEventListener('click', () => {
             const setCheck = (id, val) => document.getElementById(id).checked = val;
@@ -230,19 +179,12 @@
             setCheck('morning_briefing_enabled', true); setInput('morning_briefing_time', "08:00");
             setCheck('safe_path_enabled', false); setInput('safe_path_contacts', ""); setInput('safe_path_interval', "3");
             
-            // Скидання будильника
-            setCheck('smart_alarm_enabled', false); setInput('alarm_arrival_time', "09:00"); setInput('alarm_prep_time', "45");
-            document.getElementById('alarm_route').value = "teremki";
-            document.getElementById('alarm_custom_address').value = "";
-            
             document.getElementById('comm_style').value = "default";
             
             document.getElementById('quiet_hours_enabled').dispatchEvent(new Event('change'));
             document.getElementById('utility_reminders_enabled').dispatchEvent(new Event('change'));
             document.getElementById('voltage').dispatchEvent(new Event('change'));
             document.getElementById('morning_briefing_enabled').dispatchEvent(new Event('change'));
-            document.getElementById('smart_alarm_enabled').dispatchEvent(new Event('change'));
-            document.getElementById('alarm_route').dispatchEvent(new Event('change'));
             document.getElementById('safe_path_enabled').dispatchEvent(new Event('change'));
             
             tg.showAlert("Налаштування скинуто до стандартних.");
@@ -284,22 +226,12 @@
                 morning_briefing_enabled: document.getElementById('morning_briefing_enabled').checked,
                 morning_briefing_time: document.getElementById('morning_briefing_time').value,
                 comm_style: document.getElementById('comm_style').value,
-                smart_alarm_enabled: document.getElementById('smart_alarm_enabled').checked,
-                alarm_arrival_time: document.getElementById('alarm_arrival_time').value,
-                alarm_prep_time: parseInt(document.getElementById('alarm_prep_time').value),
-                alarm_route: document.getElementById('alarm_route').value,
-                alarm_custom_address: document.getElementById('alarm_custom_address').value,
                 safe_path_enabled: document.getElementById('safe_path_enabled').checked,
                 safe_path_contacts: document.getElementById('safe_path_contacts').value,
                 safe_path_interval: parseInt(document.getElementById('safe_path_interval').value)
             };
             tg.sendData(JSON.stringify(data));
         });
-        
-        function requestMapLocation() {
-            // Відправляємо боту спеціальну команду і закриваємо Web App
-            tg.sendData(JSON.stringify({ action: "request_location" }));
-        }
     </script>
 </body>
 </html>
