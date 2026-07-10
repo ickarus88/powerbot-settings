@@ -87,8 +87,10 @@
         });
 
         function requestMapLocation() {
-            // МАГІЯ: Відкриваємо бота з командою setloc
+            // Відкриваємо бота з командою setloc
             tg.openTelegramLink("https://t.me/Happy_watt_bot?start=setloc");
+            // ПРИМУСОВО ЗАКРИВАЄМО WEB APP:
+            tg.close();
         }
 
         tg.MainButton.textColor = "#ffffff";
