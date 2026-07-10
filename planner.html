@@ -87,7 +87,8 @@
         });
 
         function requestMapLocation() {
-            tg.sendData(JSON.stringify({ action: "request_location" }));
+            // МАГІЯ: Відкриваємо бота з командою setloc
+            tg.openTelegramLink("https://t.me/Happy_watt_bot?start=setloc");
         }
 
         tg.MainButton.textColor = "#ffffff";
@@ -96,15 +97,30 @@
         tg.MainButton.show();
 
         Telegram.WebApp.onEvent('mainButtonClicked', function() {
-            let data = {
+            let payload = {
+                initData: tg.initData,
                 action: "save_planner",
-                smart_alarm_enabled: document.getElementById('smart_alarm_enabled').checked,
-                alarm_arrival_time: document.getElementById('alarm_arrival_time').value,
-                alarm_prep_time: parseInt(document.getElementById('alarm_prep_time').value),
-                alarm_route: document.getElementById('alarm_route').value,
-                alarm_custom_address: document.getElementById('alarm_custom_address').value
+                settings: {
+                    smart_alarm_enabled: document.getElementById('smart_alarm_enabled').checked,
+                    alarm_arrival_time: document.getElementById('alarm_arrival_time').value,
+                    alarm_prep_time: parseInt(document.getElementById('alarm_prep_time').value),
+                    alarm_route: document.getElementById('alarm_route').value,
+                    alarm_custom_address: document.getElementById('alarm_custom_address').value
+                }
             };
-            tg.sendData(JSON.stringify(data));
+            
+            // Відправляємо на наш сервер!
+            fetch('https://shop.rebro.pp.ua/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) tg.showAlert(data.error);
+                else tg.close();
+            })
+            .catch(err => tg.showAlert("Помилка з'єднання з сервером."));
         });
     </script>
 </body>
