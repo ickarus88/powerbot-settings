@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Smart-Планувальник</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: -apple-system, sans-serif; background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); margin: 0; padding: 0; padding-bottom: 80px; }
+        .section { background-color: var(--tg-theme-bg-color, #fff); margin-top: 20px; border-top: 1px solid var(--tg-theme-hint-color, #ccc); border-bottom: 1px solid var(--tg-theme-hint-color, #ccc); }
+        .section-title { padding: 10px 15px 5px; font-size: 13px; text-transform: uppercase; color: var(--tg-theme-hint-color, #888); }
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #eee); }
+        .row:last-child { border-bottom: none; }
+        .label { font-size: 16px; display: flex; align-items: center; gap: 10px; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--tg-theme-button-color, #3390ec); }
+        input:checked + .slider:before { transform: translateX(22px); }
+        input[type="time"], input[type="number"] { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); border: none; padding: 8px; border-radius: 8px; font-size: 16px; width: 80px; text-align: center; }
+        .style-select { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); border: none; padding: 8px 12px; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; max-width: 180px; }
+        .hidden { display: none !important; }
+        .desc { font-size: 12px; color: var(--tg-theme-hint-color, #888); padding: 5px 15px 15px; line-height: 1.4; }
+        .custom-address-container { display: flex; flex-direction: column; width: 100%; box-sizing: border-box; gap: 10px; }
+        .custom-address-input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid var(--tg-theme-hint-color, #ccc); border-radius: 8px; font-size: 15px; background-color: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); outline: none; }
+        .btn-map { background-color: var(--tg-theme-secondary-bg-color, #e3f2fd); color: var(--tg-theme-button-color, #2481cc); border: 1px solid var(--tg-theme-button-color, #2481cc); padding: 10px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    </style>
+</head>
+<body>
+
+    <div class="section-title">Smart-Планувальник поїздок</div>
+    <div class="section">
+        <div class="row"><span class="label">⏰ Увімкнути планувальник</span><label class="switch"><input type="checkbox" id="smart_alarm_enabled"><span class="slider"></span></label></div>
+        <div id="alarm_settings" class="hidden">
+            <div class="row"><span class="label">О котрій треба бути на місці?</span><input type="time" id="alarm_arrival_time" value="09:00"></div>
+            <div class="row"><span class="label">Час на збори (хвилин)</span><input type="number" id="alarm_prep_time" value="45" min="5" max="180"></div>
+            <div class="row">
+                <span class="label">Маршрут</span>
+                <select id="alarm_route" class="style-select">
+                    <option value="akadem">м. Академмістечко</option>
+                    <option value="zhytomyrska">м. Житомирська</option>
+                    <option value="teremki">м. Теремки</option>
+                    <option value="ipodrom">м. Іподром</option>
+                    <option value="custom">📍 Власна адреса...</option>
+                </select>
+            </div>
+            <div class="row hidden" id="custom_address_row">
+                <div class="custom-address-container">
+                    <span class="label" style="font-size: 13px; color: var(--tg-theme-hint-color);">Введіть адресу (напр: Хрещатик 22):</span>
+                    <input type="text" id="alarm_custom_address" class="custom-address-input" placeholder="Вулиця, номер будинку...">
+                    <button class="btn-map" onclick="requestMapLocation()">
+                        <span style="font-size: 18px;">📍</span> Вказати точку на карті
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="desc">Бот сам перевірить затори та погоду вранці і розбудить вас саме тоді, коли потрібно виходити, щоб не запізнитися.</div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('smart_alarm_enabled')) document.getElementById('smart_alarm_enabled').checked = (urlParams.get('smart_alarm_enabled') === '1');
+            if (urlParams.has('alarm_arrival_time')) document.getElementById('alarm_arrival_time').value = urlParams.get('alarm_arrival_time');
+            if (urlParams.has('alarm_prep_time')) document.getElementById('alarm_prep_time').value = urlParams.get('alarm_prep_time');
+            if (urlParams.has('alarm_route')) document.getElementById('alarm_route').value = urlParams.get('alarm_route');
+            if (urlParams.has('alarm_custom_address')) document.getElementById('alarm_custom_address').value = decodeURIComponent(urlParams.get('alarm_custom_address'));
+
+            document.getElementById('smart_alarm_enabled').dispatchEvent(new Event('change'));
+            document.getElementById('alarm_route').dispatchEvent(new Event('change'));
+        });
+
+        document.getElementById('smart_alarm_enabled').addEventListener('change', function() {
+            if(this.checked) document.getElementById('alarm_settings').classList.remove('hidden');
+            else document.getElementById('alarm_settings').classList.add('hidden');
+        });
+
+        document.getElementById('alarm_route').addEventListener('change', function() {
+            if(this.value === 'custom') document.getElementById('custom_address_row').classList.remove('hidden');
+            else document.getElementById('custom_address_row').classList.add('hidden');
+        });
+
+        function requestMapLocation() {
+            tg.sendData(JSON.stringify({ action: "request_location" }));
+        }
+
+        tg.MainButton.textColor = "#ffffff";
+        tg.MainButton.color = tg.themeParams.button_color || "#3390ec";
+        tg.MainButton.setText("ЗБЕРЕГТИ НАЛАШТУВАННЯ");
+        tg.MainButton.show();
+
+        Telegram.WebApp.onEvent('mainButtonClicked', function() {
+            let data = {
+                action: "save_planner",
+                smart_alarm_enabled: document.getElementById('smart_alarm_enabled').checked,
+                alarm_arrival_time: document.getElementById('alarm_arrival_time').value,
+                alarm_prep_time: parseInt(document.getElementById('alarm_prep_time').value),
+                alarm_route: document.getElementById('alarm_route').value,
+                alarm_custom_address: document.getElementById('alarm_custom_address').value
+            };
+            tg.sendData(JSON.stringify(data));
+        });
+    </script>
+</body>
+</html>
