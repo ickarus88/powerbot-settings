@@ -87,10 +87,13 @@
         });
 
         function requestMapLocation() {
-            // Відкриваємо бота з командою setloc
+            // Даємо команду відкрити бота
             tg.openTelegramLink("https://t.me/Happy_watt_bot?start=setloc");
-            // ПРИМУСОВО ЗАКРИВАЄМО WEB APP:
-            tg.close();
+            
+            // Чекаємо півсекунди і закриваємо вікно
+            setTimeout(function() {
+                tg.close();
+            }, 500);
         }
 
         tg.MainButton.textColor = "#ffffff";
