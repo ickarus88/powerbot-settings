@@ -22,6 +22,12 @@
         input[type="number"], input[type="text"] { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); border: 1px solid var(--tg-theme-hint-color, #ccc); padding: 10px; border-radius: 8px; font-size: 15px; width: 100%; box-sizing: border-box; outline: none; }
         .hidden { display: none !important; }
         .desc { font-size: 12px; color: var(--tg-theme-hint-color, #888); padding: 5px 15px 15px; line-height: 1.4; }
+        .btn { background-color: var(--tg-theme-button-color, #3390ec); color: #ffffff; border: none; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn:active { opacity: 0.8; transform: scale(0.98); }
+        
+        /* Стилі для поля вводу ID */
+        .id-input { width: 100%; box-sizing: border-box; padding: 14px; border-radius: 10px; border: 2px solid var(--tg-theme-hint-color, #ccc); background: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); outline: none; font-size: 16px; transition: 0.3s; font-family: monospace; letter-spacing: 1px; }
+        .id-input:focus { border-color: var(--tg-theme-button-color, #3390ec); box-shadow: 0 0 0 3px rgba(51, 144, 236, 0.2); }
     </style>
 </head>
 <body>
@@ -29,27 +35,33 @@
     <div class="section-title">🛡 Безпечний шлях (Night Guardian)</div>
     <div class="section">
         <div class="row"><span class="label">🛡 Увімкнути функцію</span><label class="switch"><input type="checkbox" id="safe_path_enabled"><span class="slider"></span></label></div>
+        
         <div id="safe_path_settings" class="hidden">
             <div class="row" style="flex-direction: column; align-items: flex-start;">
-                <span class="label" style="font-size: 14px; margin-bottom: 10px;">ID довірених контактів (через кому):</span>
+                <span class="label" style="font-size: 16px; font-weight: bold; margin-bottom: 12px;">👥 Довірені контакти</span>
                 
-                <!-- НОВИЙ КРАСИВИЙ БЛОК З КНОПКОЮ -->
-                <div style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; border: 1px solid var(--tg-theme-hint-color, #ccc); margin-bottom: 10px;">
-                    <span style="font-size: 12px; color: var(--tg-theme-text-color); display: block; margin-bottom: 8px;">
-                        Щоб додати людину, вам потрібен її Telegram ID. Надішліть їй автоматичний запит:
-                    </span>
-                    <button class="btn btn-outline" style="margin-bottom: 0; padding: 6px; font-size: 13px;" onclick="shareIdRequest()">
-                        📤 Надіслати запит рідним
+                <!-- КРАСИВИЙ БЛОК З ІНСТРУКЦІЄЮ -->
+                <div style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); padding: 16px; border-radius: 12px; border: 1px solid var(--tg-theme-button-color, #3390ec); width: 100%; box-sizing: border-box; margin-bottom: 16px;">
+                    <div style="font-weight: bold; color: var(--tg-theme-button-color, #3390ec); margin-bottom: 10px; font-size: 15px;">Як додати людину?</div>
+                    <div style="font-size: 13px; line-height: 1.6; margin-bottom: 16px; color: var(--tg-theme-text-color);">
+                        <b>Крок 1:</b> Натисніть синю кнопку нижче і відправте повідомлення вашій близькій людині.<br>
+                        <b>Крок 2:</b> Людина натисне на посилання, і бот видасть їй унікальний <b>цифровий ID</b>.<br>
+                        <b>Крок 3:</b> Скопіюйте ці цифри і вставте у поле нижче.
+                    </div>
+                    <button class="btn" style="margin-bottom: 0; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(51, 144, 236, 0.3);" onclick="shareIdRequest()">
+                        <span style="font-size: 18px;">📤</span> Надіслати запит рідним
                     </button>
                 </div>
 
-                <input type="text" id="safe_path_contacts" placeholder="Напр: 123456789, 987654321" style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid var(--tg-theme-hint-color, #ccc); background: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); outline: none;">
+                <!-- ВЕЛИКЕ ПОЛЕ ДЛЯ ВВОДУ -->
+                <span style="font-size: 13px; color: var(--tg-theme-hint-color); margin-bottom: 6px;">Вставте отриманий ID сюди (можна кілька через кому):</span>
+                <input type="text" id="safe_path_contacts" class="id-input" placeholder="Напр: 123456789, 987654321">
             </div>
+            
             <div class="row">
                 <span class="label">Інтервал перевірки (хв)</span>
                 <input type="number" id="safe_path_interval" style="width: 80px; text-align: center; padding: 8px; border-radius: 8px; border: 1px solid var(--tg-theme-hint-color, #ccc); background: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000);" value="3" min="1" max="15">
             </div>
-        </div>
         </div>
     </div>
     <div class="desc">Бот буде стежити за вами по GPS. Якщо ви не натиснете "Все добре" або натиснете "SOS", бот миттєво відправить ваші координати вказаним контактам.</div>
@@ -73,6 +85,11 @@
             else document.getElementById('safe_path_settings').classList.add('hidden');
         });
 
+        function shareIdRequest() {
+            let text = encodeURIComponent("Привіт! Я налаштовую функцію 'Безпечний шлях' у нашому ЖК. Щоб додати тебе в довірені контакти, мені потрібен твій Telegram ID. Натисни на посилання нижче, щоб дізнатися його:\n\n👉 https://t.me/Happy_watt_bot?start=myid");
+            tg.openTelegramLink(`https://t.me/share/url?url=&text=${text}`);
+        }
+
         tg.MainButton.textColor = "#ffffff";
         tg.MainButton.color = tg.themeParams.button_color || "#3390ec";
         tg.MainButton.setText("ЗБЕРЕГТИ НАЛАШТУВАННЯ");
@@ -87,12 +104,6 @@
             };
             tg.sendData(JSON.stringify(data));
         });
-    function shareIdRequest() {
-            // Формуємо текст для відправки
-            let text = encodeURIComponent("Привіт! Я налаштовую функцію 'Безпечний шлях' у нашому ЖК. Щоб додати тебе в довірені контакти, мені потрібен твій Telegram ID. Натисни на посилання нижче, щоб дізнатися його:\n\n👉 https://t.me/Happy_watt_bot?start=myid");
-            // Відкриваємо вікно вибору чату в Telegram
-            tg.openTelegramLink(`https://t.me/share/url?url=&text=${text}`);
-        }
     </script>
 </body>
 </html>
