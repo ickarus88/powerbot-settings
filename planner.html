@@ -122,10 +122,15 @@
             })
             .then(res => res.json())
             .then(data => {
-                if(data.error) tg.showAlert(data.error);
-                else tg.close();
+                if(data.error) {
+                    tg.showAlert(data.error);
+                } else {
+                    // ДОДАЛИ КРАСИВЕ СПЛИВАЮЧЕ ВІКНО:
+                    tg.showAlert("✅ Налаштування успішно збережено!");
+                    setTimeout(() => tg.close(), 1000); // Закриваємо Web App через 1 секунду
+                }
             })
-            .catch(err => tg.showAlert("Помилка з'єднання з сервером."));
+            .catch(err => tg.showAlert("❌ Помилка з'єднання з сервером."));
         });
     </script>
 </body>
