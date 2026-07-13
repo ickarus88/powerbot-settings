@@ -74,7 +74,8 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
-            
+
+            if (urlParams.has('msg_id')) window.currentMsgId = urlParams.get('msg_id');
             if (urlParams.has('smart_alarm_enabled')) document.getElementById('smart_alarm_enabled').checked = (urlParams.get('smart_alarm_enabled') === '1');
             if (urlParams.has('alarm_arrival_time')) document.getElementById('alarm_arrival_time').value = urlParams.get('alarm_arrival_time');
             if (urlParams.has('alarm_prep_time')) document.getElementById('alarm_prep_time').value = urlParams.get('alarm_prep_time');
@@ -115,6 +116,7 @@
             let payload = {
                 initData: tg.initData,
                 action: "save_planner",
+                msg_id: window.currentMsgId,
                 settings: {
                     smart_alarm_enabled: document.getElementById('smart_alarm_enabled').checked,
                     alarm_arrival_time: document.getElementById('alarm_arrival_time').value,
