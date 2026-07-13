@@ -37,6 +37,15 @@
             <div class="row"><span class="label">О котрій треба бути на місці?</span><input type="time" id="alarm_arrival_time" value="09:00"></div>
             <div class="row"><span class="label">Час на збори (хвилин)</span><input type="number" id="alarm_prep_time" value="45" min="5" max="180"></div>
             <div class="row">
+                <span class="label">Повторення</span>
+                <select id="alarm_repeat" class="style-select">
+                    <option value="once">Один раз</option>
+                    <option value="everyday">Щодня</option>
+                    <option value="weekdays">По буднях (Пн-Пт)</option>
+                    <option value="weekends">На вихідних (Сб-Нд)</option>
+                </select>
+            </div>
+            <div class="row">
                 <span class="label">Маршрут</span>
                 <select id="alarm_route" class="style-select">
                     <option value="akadem">м. Академмістечко</option>
@@ -71,6 +80,7 @@
             if (urlParams.has('alarm_prep_time')) document.getElementById('alarm_prep_time').value = urlParams.get('alarm_prep_time');
             if (urlParams.has('alarm_route')) document.getElementById('alarm_route').value = urlParams.get('alarm_route');
             if (urlParams.has('alarm_custom_address')) document.getElementById('alarm_custom_address').value = decodeURIComponent(urlParams.get('alarm_custom_address'));
+            if (urlParams.has('alarm_repeat')) document.getElementById('alarm_repeat').value = urlParams.get('alarm_repeat');
 
             document.getElementById('smart_alarm_enabled').dispatchEvent(new Event('change'));
             document.getElementById('alarm_route').dispatchEvent(new Event('change'));
@@ -110,7 +120,8 @@
                     alarm_arrival_time: document.getElementById('alarm_arrival_time').value,
                     alarm_prep_time: parseInt(document.getElementById('alarm_prep_time').value),
                     alarm_route: document.getElementById('alarm_route').value,
-                    alarm_custom_address: document.getElementById('alarm_custom_address').value
+                    alarm_custom_address: document.getElementById('alarm_custom_address').value,
+                    alarm_repeat: document.getElementById('alarm_repeat').value
                 }
             };
             
